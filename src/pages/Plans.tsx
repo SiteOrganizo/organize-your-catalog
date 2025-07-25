@@ -38,7 +38,7 @@ export const PlansPage = () => {
     {
       id: "pro",
       name: "Profissional",
-      price: "R$ 39",
+      price: "R$ 29,90",
       period: "/mês",
       highlighted: true,
       badge: "Mais Popular",
