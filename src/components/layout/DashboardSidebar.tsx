@@ -6,7 +6,8 @@ import {
   Search, 
   Send, 
   Settings,
-  Store
+  Store,
+  Crown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -15,8 +16,8 @@ const navigation = [
   { name: 'Minha Loja', href: '/dashboard/store', icon: Store },
   { name: 'Categorias', href: '/dashboard/categories', icon: FolderOpen },
   { name: 'Produtos', href: '/dashboard/products', icon: Package },
-  
   { name: 'Enviar Catálogo', href: '/dashboard/send', icon: Send },
+  { name: 'Planos', href: '/dashboard/plans', icon: Crown },
   { name: 'Configurações', href: '/dashboard/settings', icon: Settings },
 ];
 

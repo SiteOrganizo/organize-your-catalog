@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ProductFields } from "@/components/ProductFields";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Package, Plus, Search, Edit, Trash2, Eye } from "lucide-react";
+import { Package, Plus, Search, Edit, Trash2, Eye, Sparkles, Copy, Share, FileText } from "lucide-react";
 
 interface Product {
   id: string;
@@ -16,7 +18,9 @@ interface Product {
   description: string;
   price: number;
   category: string;
-  image?: string;
+  customFields: Record<string, any>;
+  images: string[];
+  aiGenerated?: boolean;
 }
 
 export const ProductsPage = () => {
@@ -31,14 +35,30 @@ export const ProductsPage = () => {
     description: "",
     price: "",
     category: "",
-    image: null as File | null
+    customFields: {} as Record<string, any>,
+    images: [] as File[]
   });
 
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+
+  const categories = [
+    "Imóveis",
+    "Veículos", 
+    "Moda",
+    "Eletrônicos",
+    "Casa e Jardim",
+    "Esportes",
+    "Pet Shop",
+    "Agro",
+    "Informática",
+    "Outros"
+  ];
+
   const handleAddProduct = () => {
-    if (!newProduct.name || !newProduct.price) {
+    if (!newProduct.name || !newProduct.price || !newProduct.category) {
       toast({
         title: "Erro",
-        description: "Nome e preço são obrigatórios.",
+        description: "Nome, preço e categoria são obrigatórios.",
         variant: "destructive"
       });
       return;
@@ -50,7 +70,9 @@ export const ProductsPage = () => {
       name: newProduct.name,
       description: newProduct.description,
       price: parseFloat(newProduct.price),
-      category: newProduct.category || "Geral"
+      category: newProduct.category,
+      customFields: newProduct.customFields,
+      images: newProduct.images.map(file => URL.createObjectURL(file))
     };
 
     setProducts([...products, product]);
@@ -60,13 +82,49 @@ export const ProductsPage = () => {
       description: "",
       price: "",
       category: "",
-      image: null
+      customFields: {},
+      images: []
     });
 
     toast({
       title: "Produto adicionado!",
       description: `${product.name} foi cadastrado com o código ${product.code}.`,
     });
+  };
+
+  const handleGenerateAIDescription = async () => {
+    if (!newProduct.name || !newProduct.category) {
+      toast({
+        title: "Informações insuficientes",
+        description: "Nome e categoria são necessários para gerar descrição por IA.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsGeneratingAI(true);
+    
+    // Simular geração de IA (em produção, seria uma chamada real para IA)
+    setTimeout(() => {
+      const aiDescriptions = {
+        "Imóveis": `${newProduct.name} - Excelente oportunidade! Imóvel bem localizado, com acabamento de qualidade e em região valorizada. Ideal para quem busca conforto e praticidade.`,
+        "Veículos": `${newProduct.name} - Veículo em excelente estado de conservação, revisado e com documentação em dia. Perfeito para quem busca qualidade e segurança.`,
+        "Moda": `${newProduct.name} - Peça versátil e moderna, com tecido de alta qualidade e caimento perfeito. Combina estilo e conforto para o dia a dia.`,
+        "Eletrônicos": `${newProduct.name} - Tecnologia de ponta com design inovador. Produto com excelente custo-benefício e garantia estendida.`,
+        "Casa e Jardim": `${newProduct.name} - Produto prático e funcional, ideal para organizar e decorar seu ambiente com estilo e qualidade.`
+      };
+
+      const description = aiDescriptions[newProduct.category as keyof typeof aiDescriptions] || 
+        `${newProduct.name} - Produto de alta qualidade, cuidadosamente selecionado para atender suas necessidades com excelência.`;
+
+      setNewProduct({ ...newProduct, description });
+      setIsGeneratingAI(false);
+      
+      toast({
+        title: "Descrição gerada por IA!",
+        description: "A descrição foi criada automaticamente.",
+      });
+    }, 2000);
   };
 
   const handleSearchCodes = () => {
@@ -80,6 +138,32 @@ export const ProductsPage = () => {
       title: "Busca realizada",
       description: `${results.length} produto(s) encontrado(s).`,
     });
+  };
+
+  const handleGenerateLink = () => {
+    const codes = searchResults.map(p => p.code).join(',');
+    const link = `${window.location.origin}/catalog?codes=${codes}`;
+    navigator.clipboard.writeText(link);
+    
+    toast({
+      title: "Link copiado!",
+      description: "O link do catálogo foi copiado para a área de transferência.",
+    });
+  };
+
+  const handleGeneratePDF = () => {
+    toast({
+      title: "PDF em desenvolvimento",
+      description: "A funcionalidade de gerar PDF será disponibilizada em breve.",
+    });
+  };
+
+  const handleSendWhatsApp = () => {
+    const codes = searchResults.map(p => p.code).join(',');
+    const link = `${window.location.origin}/catalog?codes=${codes}`;
+    const message = `Confira nossos produtos selecionados: ${link}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   const handleDeleteProduct = (productId: string) => {
@@ -130,13 +214,26 @@ export const ProductsPage = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="category">Categoria</Label>
-                    <Input
-                      id="category"
-                      value={newProduct.category}
-                      onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-                      placeholder="Ex: Roupas Femininas"
-                    />
+                    <Label htmlFor="category">Categoria *</Label>
+                    <Select 
+                      value={newProduct.category} 
+                      onValueChange={(value) => setNewProduct({ 
+                        ...newProduct, 
+                        category: value,
+                        customFields: {} // Reset custom fields when category changes
+                      })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione uma categoria" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
@@ -152,12 +249,25 @@ export const ProductsPage = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="description">Descrição</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="description">Descrição</Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleGenerateAIDescription}
+                      disabled={isGeneratingAI || !newProduct.name || !newProduct.category}
+                      className="text-primary border-primary hover:bg-primary hover:text-primary-foreground"
+                    >
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      {isGeneratingAI ? "Gerando..." : "Gerar por IA"}
+                    </Button>
+                  </div>
                   <Textarea
                     id="description"
                     value={newProduct.description}
                     onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
-                    placeholder="Descreva as características do produto..."
+                    placeholder="Descreva as características do produto ou use a IA..."
                     rows={3}
                   />
                 </div>
@@ -176,19 +286,43 @@ export const ProductsPage = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="image">Imagem do Produto</Label>
+                    <Label htmlFor="images">Imagens do Produto (máx. 3 no plano gratuito)</Label>
                     <Input
-                      id="image"
+                      id="images"
                       type="file"
                       accept="image/*"
+                      multiple
                       onChange={(e) => {
-                        if (e.target.files && e.target.files[0]) {
-                          setNewProduct({ ...newProduct, image: e.target.files[0] });
+                        if (e.target.files) {
+                          const files = Array.from(e.target.files).slice(0, 3); // Limite do plano gratuito
+                          setNewProduct({ ...newProduct, images: files });
                         }
                       }}
                     />
+                    {newProduct.images.length > 0 && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {newProduct.images.length} imagem(ns) selecionada(s)
+                      </p>
+                    )}
                   </div>
                 </div>
+
+                {/* Campos dinâmicos por categoria */}
+                {newProduct.category && (
+                  <div className="space-y-4">
+                    <div className="border-t pt-4">
+                      <h3 className="text-lg font-medium mb-4">Informações Específicas - {newProduct.category}</h3>
+                      <ProductFields
+                        category={newProduct.category}
+                        values={newProduct.customFields}
+                        onChange={(field, value) => setNewProduct({
+                          ...newProduct,
+                          customFields: { ...newProduct.customFields, [field]: value }
+                        })}
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <Button onClick={handleAddProduct} className="w-full">
                   <Package className="h-4 w-4 mr-2" />
@@ -250,14 +384,28 @@ export const ProductsPage = () => {
                       ))}
                     </div>
                     <div className="flex gap-4">
-                      <Button variant="outline" className="flex-1">
-                        Gerar Link Compartilhável
+                      <Button 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={handleGenerateLink}
+                      >
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copiar Link
                       </Button>
-                      <Button variant="outline" className="flex-1">
+                      <Button 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={handleGeneratePDF}
+                      >
+                        <FileText className="h-4 w-4 mr-2" />
                         Gerar PDF
                       </Button>
-                      <Button className="flex-1">
-                        Enviar por WhatsApp
+                      <Button 
+                        className="flex-1"
+                        onClick={handleSendWhatsApp}
+                      >
+                        <Share className="h-4 w-4 mr-2" />
+                        WhatsApp
                       </Button>
                     </div>
                   </div>
