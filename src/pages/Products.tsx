@@ -248,30 +248,6 @@ export const ProductsPage = () => {
                   />
                 </div>
 
-                <div>
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="description">Descrição</Label>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={handleGenerateAIDescription}
-                      disabled={isGeneratingAI || !newProduct.name || !newProduct.category}
-                      className="text-primary border-primary hover:bg-primary hover:text-primary-foreground"
-                    >
-                      <Sparkles className="h-4 w-4 mr-2" />
-                      {isGeneratingAI ? "Gerando..." : "Gerar por IA"}
-                    </Button>
-                  </div>
-                  <Textarea
-                    id="description"
-                    value={newProduct.description}
-                    onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
-                    placeholder="Descreva as características do produto ou use a IA..."
-                    rows={3}
-                  />
-                </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="price">Preço (R$) *</Label>
@@ -323,6 +299,36 @@ export const ProductsPage = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Descrição vem após as informações específicas */}
+                <div className="border-t pt-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="description">Descrição</Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleGenerateAIDescription}
+                      disabled={isGeneratingAI || !newProduct.name || !newProduct.category}
+                      className="text-primary border-primary hover:bg-primary hover:text-primary-foreground"
+                    >
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      {isGeneratingAI ? "Gerando..." : "Gerar por IA"}
+                    </Button>
+                  </div>
+                  <Textarea
+                    id="description"
+                    value={newProduct.description}
+                    onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                    placeholder="Preencha as informações específicas acima e clique em 'Gerar por IA' para uma descrição personalizada..."
+                    rows={4}
+                  />
+                  {newProduct.category && Object.keys(newProduct.customFields).length > 0 && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      💡 A IA usará as informações específicas preenchidas para gerar uma descrição mais rica e contextualizada
+                    </p>
+                  )}
+                </div>
 
                 <Button onClick={handleAddProduct} className="w-full">
                   <Package className="h-4 w-4 mr-2" />
