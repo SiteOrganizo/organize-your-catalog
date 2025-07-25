@@ -15,7 +15,7 @@ const navigation = [
   { name: 'Minha Loja', href: '/dashboard/store', icon: Store },
   { name: 'Categorias', href: '/dashboard/categories', icon: FolderOpen },
   { name: 'Produtos', href: '/dashboard/products', icon: Package },
-  { name: 'Buscar por Código', href: '/dashboard/search', icon: Search },
+  
   { name: 'Enviar Catálogo', href: '/dashboard/send', icon: Send },
   { name: 'Configurações', href: '/dashboard/settings', icon: Settings },
 ];
