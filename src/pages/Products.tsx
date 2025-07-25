@@ -41,18 +41,14 @@ export const ProductsPage = () => {
 
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
 
-  const categories = [
+  // Categorias criadas pelo usuário (simulação - em produção viria de um contexto/estado global)
+  const [userCategories, setUserCategories] = useState<string[]>([
     "Imóveis",
     "Veículos", 
     "Moda",
     "Eletrônicos",
-    "Casa e Jardim",
-    "Esportes",
-    "Pet Shop",
-    "Agro",
-    "Informática",
-    "Outros"
-  ];
+    "Casa e Jardim"
+  ]);
 
   const handleAddProduct = () => {
     if (!newProduct.name || !newProduct.price || !newProduct.category) {
@@ -227,7 +223,7 @@ export const ProductsPage = () => {
                         <SelectValue placeholder="Selecione uma categoria" />
                       </SelectTrigger>
                       <SelectContent>
-                        {categories.map((category) => (
+                        {userCategories.map((category) => (
                           <SelectItem key={category} value={category}>
                             {category}
                           </SelectItem>
@@ -436,37 +432,52 @@ export const ProductsPage = () => {
                     <p className="text-muted-foreground">Comece adicionando seu primeiro produto.</p>
                   </div>
                 ) : (
-                  <div className="grid gap-4">
-                    {products.map((product) => (
-                      <Card key={product.id} className="border border-muted">
-                        <CardContent className="p-4">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h4 className="font-medium">{product.name}</h4>
-                              <p className="text-sm text-muted-foreground">Código: {product.code}</p>
-                              <p className="text-sm">Categoria: {product.category}</p>
-                              <p className="text-lg font-bold text-primary">R$ {product.price.toFixed(2)}</p>
-                              {product.description && (
-                                <p className="text-sm text-muted-foreground mt-1">{product.description}</p>
-                              )}
-                            </div>
-                            <div className="flex gap-2">
-                              <Button size="sm" variant="outline">
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                variant="outline"
-                                onClick={() => handleDeleteProduct(product.id)}
-                                className="text-destructive hover:text-destructive"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
+                  <div className="space-y-6">
+                    {userCategories.map((category) => {
+                      const categoryProducts = products.filter(product => product.category === category);
+                      
+                      if (categoryProducts.length === 0) return null;
+                      
+                      return (
+                        <div key={category} className="space-y-4">
+                          <div className="border-b pb-2">
+                            <h3 className="text-xl font-semibold text-foreground">{category}</h3>
+                            <p className="text-sm text-muted-foreground">{categoryProducts.length} produto(s)</p>
                           </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                          <div className="grid gap-4">
+                            {categoryProducts.map((product) => (
+                              <Card key={product.id} className="border border-muted">
+                                <CardContent className="p-4">
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <h4 className="font-medium">{product.name}</h4>
+                                      <p className="text-sm text-muted-foreground">Código: {product.code}</p>
+                                      <p className="text-lg font-bold text-primary">R$ {product.price.toFixed(2)}</p>
+                                      {product.description && (
+                                        <p className="text-sm text-muted-foreground mt-1">{product.description}</p>
+                                      )}
+                                    </div>
+                                    <div className="flex gap-2">
+                                      <Button size="sm" variant="outline">
+                                        <Edit className="h-4 w-4" />
+                                      </Button>
+                                      <Button 
+                                        size="sm" 
+                                        variant="outline"
+                                        onClick={() => handleDeleteProduct(product.id)}
+                                        className="text-destructive hover:text-destructive"
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </CardContent>
