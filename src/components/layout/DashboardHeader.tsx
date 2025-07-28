@@ -1,13 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { LogOut, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/hooks/use-toast";
 
 export const DashboardHeader = () => {
   const navigate = useNavigate();
+  const { signOut, user } = useAuth();
 
-  const handleLogout = () => {
-    // TODO: Implementar logout real
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      toast({
+        title: "Logout realizado",
+        description: "Você foi desconectado com sucesso.",
+      });
+      navigate('/login');
+    } catch (error) {
+      toast({
+        title: "Erro no logout",
+        description: "Erro ao desconectar. Tente novamente.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -25,7 +40,7 @@ export const DashboardHeader = () => {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <User className="h-4 w-4" />
-            <span>Minha Loja</span>
+            <span>{user?.email || 'Usuário'}</span>
           </div>
           
           <Button 

@@ -16,6 +16,8 @@ import { SettingsPage } from "./pages/Settings";
 import { PlansPage } from "./pages/Plans";
 import { PublicCatalogPage } from "./pages/PublicCatalog";
 import NotFound from "./pages/NotFound";
+import { AuthProvider } from "./hooks/useAuth";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 const App = () => {
   // Create QueryClient inside the component to avoid initialization issues
@@ -30,27 +32,57 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/dashboard/store" element={<StorePage />} />
-            <Route path="/dashboard/categories" element={<CategoriesPage />} />
-            <Route path="/dashboard/products" element={<ProductsPage />} />
-            <Route path="/dashboard/send" element={<SendPage />} />
-            <Route path="/dashboard/plans" element={<PlansPage />} />
-            <Route path="/dashboard/settings" element={<SettingsPage />} />
-            <Route path="/catalog" element={<PublicCatalogPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/store" element={
+                <ProtectedRoute>
+                  <StorePage />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/categories" element={
+                <ProtectedRoute>
+                  <CategoriesPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/products" element={
+                <ProtectedRoute>
+                  <ProductsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/send" element={
+                <ProtectedRoute>
+                  <SendPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/plans" element={
+                <ProtectedRoute>
+                  <PlansPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/settings" element={
+                <ProtectedRoute>
+                  <SettingsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/catalog" element={<PublicCatalogPage />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };

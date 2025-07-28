@@ -5,34 +5,64 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AuthLayout } from "@/components/layout/AuthLayout";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { Eye, EyeOff } from "lucide-react";
 
 export const Login = () => {
   const navigate = useNavigate();
+  const { signIn, user } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: ""
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Redirect if already logged in
+  if (user) {
+    navigate('/dashboard');
+    return null;
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simulação de login
-    if (formData.email && formData.password) {
-      toast({
-        title: "Login realizado com sucesso!",
-        description: "Redirecionando para o painel...",
-      });
-      
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 1000);
-    } else {
+    if (!formData.email || !formData.password) {
       toast({
         title: "Erro no login",
         description: "Por favor, preencha todos os campos.",
         variant: "destructive"
       });
+      return;
     }
+
+    setLoading(true);
+    
+    const { error } = await signIn(formData.email, formData.password);
+    
+    if (error) {
+      let errorMessage = "Erro ao fazer login. Tente novamente.";
+      
+      if (error.message.includes('Invalid login credentials')) {
+        errorMessage = "Credenciais inválidas. Verifique seu email e senha.";
+      } else if (error.message.includes('Email not confirmed')) {
+        errorMessage = "Por favor, confirme seu email antes de fazer login.";
+      }
+      
+      toast({
+        title: "Erro no login",
+        description: errorMessage,
+        variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Login realizado com sucesso!",
+        description: "Redirecionando para o painel...",
+      });
+      navigate('/dashboard');
+    }
+    
+    setLoading(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,21 +97,29 @@ export const Login = () => {
 
           <div>
             <Label htmlFor="password">Senha</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              className="mt-1"
-              required
-            />
+            <div className="relative mt-1">
+              <Input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
           </div>
         </div>
 
-        <Button type="submit" className="w-full">
-          Entrar
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? "Entrando..." : "Entrar"}
         </Button>
 
         <div className="text-center">
