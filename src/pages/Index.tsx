@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Package, Zap, Shield, Smartphone } from "lucide-react";
+import { Package, Zap, Shield, Smartphone, Check } from "lucide-react";
 
 const Index = () => {
   return (
@@ -83,11 +84,11 @@ const Index = () => {
             <Card className="text-center hover:shadow-medium transition-shadow">
               <CardHeader>
                 <Shield className="h-12 w-12 text-primary mx-auto mb-4" />
-                <CardTitle>Totalmente Grátis</CardTitle>
+                <CardTitle>Plano Gratuito</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription>
-                  Comece agora sem custos e crie catálogos profissionais
+                  Comece agora sem custos e experimente todos os recursos essenciais para criar catálogos profissionais
                 </CardDescription>
               </CardContent>
             </Card>
@@ -95,8 +96,120 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* Pricing Section */}
       <section className="py-16 px-4 bg-accent">
+        <div className="max-w-6xl mx-auto">
+          <h3 className="text-3xl font-bold text-center text-foreground mb-4">
+            Escolha o plano ideal para sua loja
+          </h3>
+          <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
+            Comece grátis e evolua conforme sua loja cresce
+          </p>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Plano Gratuito */}
+            <Card className="relative">
+              <CardHeader className="text-center pb-8">
+                <CardTitle className="text-2xl">Gratuito</CardTitle>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold">R$ 0</span>
+                </div>
+                <CardDescription className="text-base mt-2">
+                  Para quem está começando
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-5 text-primary" />
+                    <span>Até 5 produtos</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-5 text-primary" />
+                    <span>3 imagens por produto</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-5 text-primary" />
+                    <span>Geração de descrição por IA</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-5 text-primary" />
+                    <span>Link compartilhável para catálogo</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-5 text-primary" />
+                    <span>Busca por código</span>
+                  </div>
+                </div>
+                <div className="pt-6">
+                  <Link to="/register" className="w-full block">
+                    <Button className="w-full" size="lg">
+                      Começar Grátis
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Plano Profissional */}
+            <Card className="relative border-primary shadow-lg">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <Badge className="bg-primary text-primary-foreground px-4 py-1">
+                  Mais Popular
+                </Badge>
+              </div>
+              <CardHeader className="text-center pb-8">
+                <CardTitle className="text-2xl">Profissional</CardTitle>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold">R$ 39</span>
+                  <span className="text-muted-foreground">/mês</span>
+                </div>
+                <CardDescription className="text-base mt-2">
+                  Para quem quer mais controle e alcance
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-5 text-primary" />
+                    <span>Produtos ilimitados</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-5 text-primary" />
+                    <span>Até 15 imagens por produto</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-5 text-primary" />
+                    <span>Personalização de categorias</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-5 text-primary" />
+                    <span>Envio por WhatsApp e link</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-5 text-primary" />
+                    <span>Catálogo com logo da sua loja</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Check className="h-5 w-5 text-primary" />
+                    <span>Relatórios e atualizações automáticas</span>
+                  </div>
+                </div>
+                <div className="pt-6">
+                  <Link to="/register" className="w-full block">
+                    <Button className="w-full bg-primary hover:bg-primary/90" size="lg">
+                      Assinar Plano Pro
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 px-4 bg-background">
         <div className="max-w-4xl mx-auto text-center">
           <h3 className="text-3xl font-bold text-foreground mb-4">
             Pronto para organizar seus produtos?
