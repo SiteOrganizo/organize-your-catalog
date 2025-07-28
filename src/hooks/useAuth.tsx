@@ -38,8 +38,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(session?.user ?? null);
         setLoading(false);
 
-        // Create profile if new user signs up
-        if (event === 'SIGNED_UP' && session?.user) {
+        // Create profile if user signs in and doesn't have one yet
+        if (event === 'SIGNED_IN' && session?.user) {
           setTimeout(() => {
             createUserProfile(session.user);
           }, 0);
