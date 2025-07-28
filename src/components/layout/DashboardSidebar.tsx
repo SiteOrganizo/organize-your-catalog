@@ -26,10 +26,10 @@ export const DashboardSidebar = () => {
 
   return (
     <div className="w-64 bg-card border-r shadow-soft flex flex-col">
-      <div className="p-6 border-b">
-        <h2 className="text-xl font-bold text-primary">Organizo</h2>
-        <p className="text-sm text-muted-foreground mt-1">Painel Administrativo</p>
-      </div>
+       <div className="p-6 border-b">
+         <h2 className="text-xl font-bold text-primary">Catalogin</h2>
+         <p className="text-sm text-muted-foreground mt-1">Painel Administrativo</p>
+       </div>
       
       <nav className="flex-1 p-4 space-y-2">
         {navigation.map((item) => {

@@ -19,10 +19,10 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         </main>
         
         <footer className="border-t bg-card p-4 text-center text-sm text-muted-foreground">
-          <div className="flex items-center justify-center gap-2">
-            <span className="font-medium text-primary">Organizo</span>
-            - Catálogos profissionais para sua loja
-          </div>
+           <div className="flex items-center justify-center gap-2">
+             <span className="font-medium text-primary">Catalogin</span>
+             - Sistema de catálogo digital versátil
+           </div>
         </footer>
       </div>
     </div>

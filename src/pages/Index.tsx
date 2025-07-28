@@ -11,7 +11,7 @@ const Index = () => {
       <section className="py-20 px-4">
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-5xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
-            Organizo
+            Catalogin
           </h1>
           <h2 className="text-3xl font-semibold text-foreground mb-4">
             Crie catálogos profissionais para sua loja
@@ -120,26 +120,26 @@ const Index = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-primary" />
-                    <span>Até 5 produtos</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-primary" />
-                    <span>3 imagens por produto</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-primary" />
-                    <span>Geração de descrição por IA</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-primary" />
-                    <span>Link compartilhável para catálogo</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-primary" />
-                    <span>Busca por código</span>
-                  </div>
+                   <div className="flex items-center gap-3">
+                     <Check className="h-5 w-5 text-primary" />
+                     <span>Cadastro de até 5 produtos</span>
+                   </div>
+                   <div className="flex items-center gap-3">
+                     <Check className="h-5 w-5 text-primary" />
+                     <span>Upload de até 3 imagens por produto</span>
+                   </div>
+                   <div className="flex items-center gap-3">
+                     <Check className="h-5 w-5 text-primary" />
+                     <span>Geração de link de catálogo</span>
+                   </div>
+                   <div className="flex items-center gap-3">
+                     <Check className="h-5 w-5 text-primary" />
+                     <span>Descrição com IA</span>
+                   </div>
+                   <div className="flex items-center gap-3">
+                     <Check className="h-5 w-5 text-primary" />
+                     <span>Criação de categorias personalizadas</span>
+                   </div>
                 </div>
                 <div className="pt-6">
                   <Link to="/register" className="w-full block">
@@ -178,22 +178,18 @@ const Index = () => {
                     <Check className="h-5 w-5 text-primary" />
                     <span>Até 15 imagens por produto</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-primary" />
-                    <span>Personalização de categorias</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-primary" />
-                    <span>Envio por WhatsApp e link</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-primary" />
-                    <span>Catálogo com logo da sua loja</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-primary" />
-                    <span>Relatórios e atualizações automáticas</span>
-                  </div>
+                   <div className="flex items-center gap-3">
+                     <Check className="h-5 w-5 text-primary" />
+                     <span>Logo da empresa e do Catalogin no link</span>
+                   </div>
+                   <div className="flex items-center gap-3">
+                     <Check className="h-5 w-5 text-primary" />
+                     <span>Campos adicionais customizados</span>
+                   </div>
+                   <div className="flex items-center gap-3">
+                     <Check className="h-5 w-5 text-primary" />
+                     <span>Dashboard com estatísticas</span>
+                   </div>
                 </div>
                 <div className="pt-6">
                   <Link to="/register" className="w-full block">
@@ -214,9 +210,9 @@ const Index = () => {
           <h3 className="text-3xl font-bold text-foreground mb-4">
             Pronto para organizar seus produtos?
           </h3>
-          <p className="text-lg text-muted-foreground mb-8">
-            Crie sua conta gratuita e comece a usar o Organizo hoje mesmo.
-          </p>
+           <p className="text-lg text-muted-foreground mb-8">
+             Crie sua conta gratuita e comece a usar o Catalogin hoje mesmo.
+           </p>
           
           <Link to="/register">
             <Button size="lg" className="gap-2">
@@ -230,10 +226,10 @@ const Index = () => {
       {/* Footer */}
       <footer className="py-8 px-4 bg-card border-t">
         <div className="max-w-6xl mx-auto text-center">
-          <div className="text-xl font-bold text-primary mb-2">Organizo</div>
-          <p className="text-sm text-muted-foreground">
-            © 2024 Organizo - Organize seus produtos com facilidade
-          </p>
+           <div className="text-xl font-bold text-primary mb-2">Catalogin</div>
+           <p className="text-sm text-muted-foreground">
+             © 2024 Catalogin - Sistema de catálogo digital versátil
+           </p>
         </div>
       </footer>
     </div>
