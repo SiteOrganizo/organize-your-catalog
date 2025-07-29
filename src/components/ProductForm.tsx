@@ -46,7 +46,7 @@ export const ProductForm = ({ product, onSave, onCancel }: ProductFormProps) => 
     name: product?.name || "",
     price: product?.price || null,
     description: product?.description || "",
-    category_id: product?.category_id || "",
+    category_id: product?.category_id || null,
     images: product?.images || [],
     custom_fields: product?.custom_fields || {},
     is_public: product?.is_public || false
@@ -60,6 +60,22 @@ export const ProductForm = ({ product, onSave, onCancel }: ProductFormProps) => 
   useEffect(() => {
     if (product?.images) {
       setPreviewUrls(product.images);
+    }
+  }, [product]);
+
+  // Sincronizar dados do produto quando ele mudar
+  useEffect(() => {
+    if (product) {
+      setFormData({
+        code: product.code || "",
+        name: product.name || "",
+        price: product.price || null,
+        description: product.description || "",
+        category_id: product.category_id || null,
+        images: product.images || [],
+        custom_fields: product.custom_fields || {},
+        is_public: product.is_public || false
+      });
     }
   }, [product]);
 
