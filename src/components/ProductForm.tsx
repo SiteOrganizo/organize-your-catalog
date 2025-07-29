@@ -227,7 +227,8 @@ export const ProductForm = ({ product, onSave, onCancel }: ProductFormProps) => 
         ...formData,
         user_id: user.id,
         images: allImages,
-        price: formData.price
+        price: formData.price,
+        category_id: formData.category_id || null
       };
 
       if (product?.id) {
