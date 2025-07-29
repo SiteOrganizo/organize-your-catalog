@@ -14,7 +14,7 @@ import { Products } from "./pages/Products";
 import { SendPage } from "./pages/Send";
 import { SettingsPage } from "./pages/Settings";
 import { PlansPage } from "./pages/Plans";
-import { PublicCatalogPage } from "./pages/PublicCatalog";
+import { PublicCatalog } from "./pages/PublicCatalog";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./hooks/useAuth";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -76,7 +76,7 @@ const App = () => {
                   <SettingsPage />
                 </ProtectedRoute>
               } />
-              <Route path="/catalog" element={<PublicCatalogPage />} />
+              <Route path="/catalog" element={<PublicCatalog />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
