@@ -1,226 +1,192 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Package, ExternalLink } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 interface Product {
   id: string;
   code: string;
   name: string;
-  description: string;
-  price: number;
-  category: string;
-  customFields: Record<string, any>;
+  price: number | null;
+  description: string | null;
   images: string[];
+  categories?: {
+    name: string;
+  };
 }
 
-export const PublicCatalogPage = () => {
+interface Profile {
+  display_name: string;
+}
+
+export const PublicCatalog = () => {
   const [searchParams] = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
-  const [storeInfo] = useState({
-    name: "Loja Exemplo",
-    logo: "",
-    greeting: "Bem-vindo ao nosso catálogo! Confira nossos produtos selecionados especialmente para você."
-  });
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const codes = searchParams.get('codes')?.split(',') || [];
-    
-    // Simular busca de produtos por códigos
-    // Em produção, seria uma consulta real ao banco de dados
-    const mockProducts: Product[] = [
-      {
-        id: "1",
-        code: "ORG123456",
-        name: "Apartamento Cobertura",
-        description: "Cobertura duplex com vista para o mar, 3 quartos, 2 vagas, área gourmet completa.",
-        price: 850000,
-        category: "Imóveis",
-        customFields: {
-          property_type: "Cobertura",
-          purpose: "Venda",
-          bedrooms: "3",
-          bathrooms: "2",
-          parking_spots: "2",
-          area: "120"
-        },
-        images: ["/placeholder.svg"]
-      }
-    ];
-
-    // Filtrar produtos pelos códigos solicitados
-    const filteredProducts = mockProducts.filter(product => 
-      codes.some(code => product.code.includes(code))
-    );
-    
-    setProducts(filteredProducts);
+    const codes = searchParams.get('codes');
+    if (codes) {
+      fetchProducts(codes.split(','));
+    }
   }, [searchParams]);
 
-  const formatCustomField = (key: string, value: any) => {
-    const fieldLabels: Record<string, string> = {
-      property_type: "Tipo",
-      purpose: "Finalidade", 
-      bedrooms: "Quartos",
-      bathrooms: "Banheiros",
-      parking_spots: "Vagas",
-      area: "Área (m²)",
-      brand: "Marca",
-      model: "Modelo",
-      year: "Ano",
-      condition: "Estado",
-      size: "Tamanho",
-      color: "Cor",
-      material: "Material"
-    };
+  const fetchProducts = async (codes: string[]) => {
+    setIsLoading(true);
 
-    return {
-      label: fieldLabels[key] || key,
-      value: value
-    };
+    try {
+      const { data: products, error: productsError } = await supabase
+        .from('products')
+        .select(`
+          *,
+          categories (
+            name
+          )
+        `)
+        .in('code', codes);
+
+      if (productsError) throw productsError;
+
+      if (products && products.length > 0) {
+        setProducts(products);
+
+        // Buscar informações do perfil do dono dos produtos
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('display_name')
+          .eq('user_id', products[0].user_id)
+          .single();
+
+        if (!profileError && profile) {
+          setProfile(profile);
+        }
+      }
+    } catch (error: any) {
+      toast({
+        title: "Erro ao carregar catálogo",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-soft">
-      {/* Header da Loja */}
-      <div className="bg-card border-b shadow-soft">
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-4">
-              {storeInfo.logo ? (
-                <img src={storeInfo.logo} alt="Logo" className="h-16 w-16 rounded-lg" />
-              ) : (
-                <Package className="h-16 w-16 text-primary" />
-              )}
-              <h1 className="text-3xl font-bold text-foreground">{storeInfo.name}</h1>
-            </div>
-            {storeInfo.greeting && (
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                {storeInfo.greeting}
-              </p>
-            )}
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-soft">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center mb-8">
+            <div className="h-8 bg-muted rounded w-64 mx-auto mb-4 animate-pulse"></div>
+            <div className="h-4 bg-muted rounded w-48 mx-auto animate-pulse"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
+              <Card key={i} className="animate-pulse">
+                <CardContent className="p-4">
+                  <div className="h-40 bg-muted rounded mb-4"></div>
+                  <div className="h-4 bg-muted rounded mb-2"></div>
+                  <div className="h-3 bg-muted rounded w-2/3"></div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </div>
+    );
+  }
 
-      {/* Lista de Produtos */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {products.length === 0 ? (
-          <div className="text-center py-12">
-            <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium">Nenhum produto encontrado</h3>
-            <p className="text-muted-foreground">
-              Verifique se os códigos estão corretos ou entre em contato conosco.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-foreground">
-              Produtos Selecionados ({products.length})
-            </h2>
-            
-            <div className="grid gap-6">
-              {products.map((product) => (
-                <Card key={product.id} className="overflow-hidden shadow-medium">
-                  <CardContent className="p-0">
-                    <div className="grid md:grid-cols-3 gap-0">
-                      {/* Imagem */}
-                      <div className="md:col-span-1">
-                        <div className="aspect-square bg-muted flex items-center justify-center">
-                          {product.images.length > 0 ? (
-                            <img
-                              src={product.images[0]}
-                              alt={product.name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <Package className="h-12 w-12 text-muted-foreground" />
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Informações */}
-                      <div className="md:col-span-2 p-6">
-                        <div className="space-y-4">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <Badge variant="secondary" className="mb-2">
-                                {product.category}
-                              </Badge>
-                              <h3 className="text-xl font-bold text-foreground">
-                                {product.name}
-                              </h3>
-                              <p className="text-sm text-muted-foreground">
-                                Código: {product.code}
-                              </p>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-2xl font-bold text-primary">
-                                R$ {product.price.toLocaleString()}
-                              </p>
-                            </div>
-                          </div>
-
-                          {product.description && (
-                            <p className="text-muted-foreground">
-                              {product.description}
-                            </p>
-                          )}
-
-                          {/* Campos personalizados */}
-                          {Object.keys(product.customFields).length > 0 && (
-                            <div>
-                              <Separator className="mb-3" />
-                              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                {Object.entries(product.customFields).map(([key, value]) => {
-                                  if (!value) return null;
-                                  const field = formatCustomField(key, value);
-                                  return (
-                                    <div key={key} className="text-sm">
-                                      <span className="font-medium text-foreground">
-                                        {field.label}:
-                                      </span>
-                                      <span className="text-muted-foreground ml-1">
-                                        {field.value}
-                                      </span>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
+  if (products.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-soft flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-4">
+            Catálogo não encontrado
+          </h1>
+          <p className="text-muted-foreground">
+            Os produtos solicitados não foram encontrados.
+          </p>
+        </div>
       </div>
+    );
+  }
 
-      {/* Rodapé do Organizo */}
-      <div className="bg-muted/50 border-t mt-12">
-        <div className="max-w-4xl mx-auto px-4 py-8">
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2">
-              <Package className="h-6 w-6 text-primary" />
-              <span className="font-bold text-lg text-primary">Organizo</span>
-            </div>
-            <p className="text-muted-foreground">
-              Catálogo gerado com Organizo – Crie o seu gratuitamente.
-            </p>
-            <Button 
-              className="bg-primary hover:bg-primary-hover"
-              onClick={() => window.open('/', '_blank')}
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Quero criar meu catálogo
-            </Button>
+  return (
+    <div className="min-h-screen bg-gradient-soft">
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-primary mb-2">
+            {profile?.display_name || 'Catálogo'} - Produtos Selecionados
+          </h1>
+          <p className="text-muted-foreground">
+            Confira nossa seleção especial de produtos
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {products.map((product) => (
+            <Card key={product.id} className="overflow-hidden shadow-medium hover:shadow-lg transition-shadow">
+              <div className="relative">
+                {product.images.length > 0 ? (
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="w-full h-48 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-48 bg-muted flex items-center justify-center">
+                    <span className="text-muted-foreground">Sem imagem</span>
+                  </div>
+                )}
+                <Badge className="absolute top-2 right-2" variant="secondary">
+                  {product.code}
+                </Badge>
+              </div>
+              
+              <CardContent className="p-4">
+                <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
+                
+                {product.categories && (
+                  <Badge variant="outline" className="mb-2">
+                    {product.categories.name}
+                  </Badge>
+                )}
+                
+                {product.price && (
+                  <p className="text-xl font-bold text-primary mb-3">
+                    R$ {product.price.toFixed(2)}
+                  </p>
+                )}
+                
+                {product.description && (
+                  <p className="text-sm text-muted-foreground">
+                    {product.description}
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <Separator className="my-8" />
+
+        <div className="text-center text-sm text-muted-foreground">
+          <p className="mb-2">Catálogo criado com</p>
+          <div className="flex items-center justify-center gap-2">
+            <span className="font-bold text-primary text-lg">Catalogin</span>
+            <span>- Sistema de catálogo digital versátil</span>
           </div>
+          <p className="mt-2">
+            Crie seu próprio catálogo em{' '}
+            <a href="/" className="text-primary hover:underline">
+              catalogin.com
+            </a>
+          </p>
         </div>
       </div>
     </div>

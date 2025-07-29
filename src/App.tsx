@@ -10,7 +10,7 @@ import { Register } from "./pages/Register";
 import { Dashboard } from "./pages/Dashboard";
 import { StorePage } from "./pages/Store";
 import { CategoriesPage } from "./pages/Categories";
-import { ProductsPage } from "./pages/Products";
+import { Products } from "./pages/Products";
 import { SendPage } from "./pages/Send";
 import { SettingsPage } from "./pages/Settings";
 import { PlansPage } from "./pages/Plans";
@@ -58,7 +58,7 @@ const App = () => {
               } />
               <Route path="/dashboard/products" element={
                 <ProtectedRoute>
-                  <ProductsPage />
+                  <Products />
                 </ProtectedRoute>
               } />
               <Route path="/dashboard/send" element={

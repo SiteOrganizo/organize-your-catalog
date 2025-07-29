@@ -41,6 +41,56 @@ export type Database = {
         }
         Relationships: []
       }
+      products: {
+        Row: {
+          category_id: string | null
+          code: string
+          created_at: string
+          custom_fields: Json | null
+          description: string | null
+          id: string
+          images: string[] | null
+          name: string
+          price: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category_id?: string | null
+          code: string
+          created_at?: string
+          custom_fields?: Json | null
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          name: string
+          price?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category_id?: string | null
+          code?: string
+          created_at?: string
+          custom_fields?: Json | null
+          description?: string | null
+          id?: string
+          images?: string[] | null
+          name?: string
+          price?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
