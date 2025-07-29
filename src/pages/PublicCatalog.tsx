@@ -47,7 +47,8 @@ export const PublicCatalog = () => {
             name
           )
         `)
-        .in('code', codes);
+        .in('code', codes)
+        .eq('is_public', true); // Only fetch public products
 
       if (productsError) throw productsError;
 
@@ -64,6 +65,13 @@ export const PublicCatalog = () => {
         if (!profileError && profile) {
           setProfile(profile);
         }
+
+        // Log public catalog access
+        await supabase.rpc('log_security_event', {
+          p_action: 'public_catalog_access',
+          p_resource_type: 'catalog',
+          p_resource_id: codes.join(',')
+        });
       }
     } catch (error: any) {
       toast({

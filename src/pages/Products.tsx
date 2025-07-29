@@ -20,6 +20,7 @@ interface Product {
   images: string[];
   custom_fields: Record<string, any>;
   created_at: string;
+  is_public?: boolean;
   categories?: {
     name: string;
   };
@@ -44,31 +45,40 @@ export const Products = () => {
 
     setIsLoading(true);
     
-    const { data, error } = await supabase
-      .from('products')
-      .select(`
-        *,
-        categories (
-          name
-        )
-      `)
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select(`
+          *,
+          categories (
+            name
+          )
+        `)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
 
-    if (error) {
+      if (error) throw error;
+      
+      setProducts((data || []).map(product => ({
+        ...product,
+        custom_fields: product.custom_fields as Record<string, any>
+      })));
+
+      // Log security event
+      await supabase.rpc('log_security_event', {
+        p_action: 'view_products',
+        p_resource_type: 'products',
+        p_resource_id: null
+      });
+    } catch (error: any) {
       toast({
         title: "Erro ao carregar produtos",
         description: error.message,
         variant: "destructive"
       });
-    } else {
-      setProducts((data || []).map(product => ({
-        ...product,
-        custom_fields: product.custom_fields as Record<string, any>
-      })));
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const deleteProduct = async (id: string) => {
@@ -240,6 +250,14 @@ export const Products = () => {
                     <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                       {product.description}
                     </p>
+                  )}
+
+                  {product.is_public && (
+                    <div className="flex items-center gap-1 mb-4">
+                      <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                        Público
+                      </span>
+                    </div>
                   )}
                   
                   <div className="flex gap-2">

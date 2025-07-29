@@ -24,6 +24,7 @@ interface Product {
   category_id: string | null;
   images: string[];
   custom_fields: Record<string, any>;
+  is_public?: boolean;
 }
 
 interface ProductFormProps {
@@ -47,7 +48,8 @@ export const ProductForm = ({ product, onSave, onCancel }: ProductFormProps) => 
     description: product?.description || "",
     category_id: product?.category_id || "",
     images: product?.images || [],
-    custom_fields: product?.custom_fields || {}
+    custom_fields: product?.custom_fields || {},
+    is_public: product?.is_public || false
   });
 
   useEffect(() => {
@@ -393,6 +395,22 @@ export const ProductForm = ({ product, onSave, onCancel }: ProductFormProps) => 
                 ))}
               </div>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="is_public">Produto Público</Label>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="is_public"
+                checked={formData.is_public || false}
+                onChange={(e) => setFormData({ ...formData, is_public: e.target.checked })}
+                className="rounded border-gray-300"
+              />
+              <Label htmlFor="is_public" className="text-sm text-muted-foreground">
+                Permitir que este produto seja visto no catálogo público
+              </Label>
+            </div>
           </div>
 
           <div className="flex gap-4 pt-4">

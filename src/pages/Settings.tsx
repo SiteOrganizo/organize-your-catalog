@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, Bell, Shield, Download, Trash2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SettingsPage = () => {
   const { toast } = useToast();
@@ -30,7 +31,7 @@ export const SettingsPage = () => {
     });
   };
 
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     if (accountData.newPassword !== accountData.confirmPassword) {
       toast({
         title: "Erro",
@@ -40,31 +41,155 @@ export const SettingsPage = () => {
       return;
     }
 
-    toast({
-      title: "Senha alterada!",
-      description: "Sua senha foi atualizada com sucesso.",
-    });
+    if (accountData.newPassword.length < 8) {
+      toast({
+        title: "Erro",
+        description: "A nova senha deve ter pelo menos 8 caracteres.",
+        variant: "destructive"
+      });
+      return;
+    }
 
-    setAccountData({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: ""
-    });
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: accountData.newPassword
+      });
+
+      if (error) throw error;
+
+      // Log security event
+      await supabase.rpc('log_security_event', {
+        p_action: 'password_change',
+        p_resource_type: 'auth',
+        p_resource_id: null
+      });
+
+      toast({
+        title: "Senha alterada!",
+        description: "Sua senha foi atualizada com sucesso.",
+      });
+      
+      // Clear password fields
+      setAccountData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: ""
+      });
+    } catch (error: any) {
+      console.error('Erro ao alterar senha:', error);
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: error.message || "Não foi possível alterar a senha."
+      });
+    }
   };
 
-  const handleExportData = () => {
-    toast({
-      title: "Exportação iniciada",
-      description: "Seus dados estão sendo preparados para download.",
-    });
+  const handleExportData = async () => {
+    try {
+      // Export user data
+      const { data: products, error: productsError } = await supabase
+        .from('products')
+        .select('*');
+
+      const { data: categories, error: categoriesError } = await supabase
+        .from('categories')
+        .select('*');
+
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .single();
+
+      if (productsError || categoriesError || profileError) {
+        throw new Error('Erro ao buscar dados para exportação');
+      }
+
+      const exportData = {
+        profile,
+        products,
+        categories,
+        exportedAt: new Date().toISOString()
+      };
+
+      // Create and download JSON file
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `catalogin-backup-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      // Log security event
+      await supabase.rpc('log_security_event', {
+        p_action: 'data_export',
+        p_resource_type: 'user_data',
+        p_resource_id: null
+      });
+
+      toast({
+        title: "Dados exportados",
+        description: "Seus dados foram baixados com sucesso."
+      });
+    } catch (error: any) {
+      console.error('Erro ao exportar dados:', error);
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Não foi possível exportar os dados."
+      });
+    }
   };
 
-  const handleDeleteAccount = () => {
-    toast({
-      title: "Conta excluída",
-      description: "Sua conta foi removida permanentemente.",
-      variant: "destructive"
-    });
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      "ATENÇÃO: Esta ação é IRREVERSÍVEL! Todos os seus dados serão perdidos permanentemente. Digite 'EXCLUIR' para confirmar:"
+    );
+    
+    if (!confirmed) return;
+
+    const confirmText = window.prompt("Digite 'EXCLUIR' para confirmar a exclusão da conta:");
+    if (confirmText !== 'EXCLUIR') {
+      toast({
+        variant: "destructive",
+        title: "Cancelado",
+        description: "A exclusão da conta foi cancelada."
+      });
+      return;
+    }
+
+    try {
+      // Log security event before deletion
+      await supabase.rpc('log_security_event', {
+        p_action: 'account_deletion_attempt',
+        p_resource_type: 'auth',
+        p_resource_id: null
+      });
+
+      // Delete user data first (due to RLS, this will only delete their own data)
+      await supabase.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabase.from('categories').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabase.from('profiles').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      
+      toast({
+        title: "Dados excluídos",
+        description: "Seus dados foram excluídos. Você será desconectado."
+      });
+
+      // Sign out user
+      await supabase.auth.signOut();
+      
+    } catch (error: any) {
+      console.error('Erro ao excluir conta:', error);
+      toast({
+        variant: "destructive",
+        title: "Erro",
+        description: "Não foi possível excluir a conta. Tente novamente."
+      });
+    }
   };
 
   return (
