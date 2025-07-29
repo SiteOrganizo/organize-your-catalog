@@ -50,6 +50,7 @@ export type Database = {
           description: string | null
           id: string
           images: string[] | null
+          is_public: boolean | null
           name: string
           price: number | null
           updated_at: string
@@ -63,6 +64,7 @@ export type Database = {
           description?: string | null
           id?: string
           images?: string[] | null
+          is_public?: boolean | null
           name: string
           price?: number | null
           updated_at?: string
@@ -76,6 +78,7 @@ export type Database = {
           description?: string | null
           id?: string
           images?: string[] | null
+          is_public?: boolean | null
           name?: string
           price?: number | null
           updated_at?: string
@@ -115,12 +118,54 @@ export type Database = {
         }
         Relationships: []
       }
+      security_audit_log: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          ip_address: unknown | null
+          resource_id: string | null
+          resource_type: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          resource_id?: string | null
+          resource_type: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          resource_id?: string | null
+          resource_type?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      log_security_event: {
+        Args: {
+          p_action: string
+          p_resource_type: string
+          p_resource_id?: string
+          p_ip_address?: unknown
+          p_user_agent?: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
