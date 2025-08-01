@@ -15,6 +15,7 @@ import { SendPage } from "./pages/Send";
 import { SettingsPage } from "./pages/Settings";
 import { PlansPage } from "./pages/Plans";
 import { PublicCatalog } from "./pages/PublicCatalog";
+import TestDB from "./pages/TestDB";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./hooks/useAuth";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -77,6 +78,7 @@ const App = () => {
                 </ProtectedRoute>
               } />
               <Route path="/catalog" element={<PublicCatalog />} />
+              <Route path="/test-db" element={<TestDB />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
