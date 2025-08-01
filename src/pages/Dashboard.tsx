@@ -10,8 +10,49 @@ import {
   BarChart3
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Dashboard = () => {
+  const { user } = useAuth();
+  const [stats, setStats] = useState({
+    products: 0,
+    categories: 0,
+    catalogs: 0,
+    views: 0
+  });
+
+  useEffect(() => {
+    if (user) {
+      fetchStats();
+    }
+  }, [user]);
+
+  const fetchStats = async () => {
+    try {
+      // Buscar produtos
+      const { data: products } = await supabase
+        .from('products')
+        .select('id')
+        .eq('user_id', user?.id);
+
+      // Buscar categorias
+      const { data: categories } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('user_id', user?.id);
+
+      setStats({
+        products: products?.length || 0,
+        categories: categories?.length || 0,
+        catalogs: 0, // Implementar quando houver tabela de catálogos
+        views: 0     // Implementar quando houver analytics
+      });
+    } catch (error) {
+      console.error('Erro ao buscar estatísticas:', error);
+    }
+  };
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -32,9 +73,9 @@ export const Dashboard = () => {
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-primary">0</div>
+              <div className="text-2xl font-bold text-primary">{stats.products}</div>
               <p className="text-xs text-muted-foreground">
-                Nenhum produto cadastrado ainda
+                {stats.products === 0 ? 'Nenhum produto cadastrado ainda' : 'produtos cadastrados'}
               </p>
             </CardContent>
           </Card>
@@ -47,9 +88,9 @@ export const Dashboard = () => {
               <FolderOpen className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-primary">0</div>
+              <div className="text-2xl font-bold text-primary">{stats.categories}</div>
               <p className="text-xs text-muted-foreground">
-                Configure suas categorias
+                {stats.categories === 0 ? 'Configure suas categorias' : 'categorias criadas'}
               </p>
             </CardContent>
           </Card>

@@ -4,12 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Send, Link, FileText, MessageCircle, Eye } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 export const SendPage = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const [products, setProducts] = useState<any[]>([]);
   const [catalogData, setCatalogData] = useState({
     title: "Catálogo da Minha Loja",
     message: "Confira nossos produtos em destaque!",
@@ -18,7 +22,44 @@ export const SendPage = () => {
     customerPhone: ""
   });
 
+  useEffect(() => {
+    if (user) {
+      fetchProducts();
+    }
+  }, [user]);
+
+  const fetchProducts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('user_id', user?.id)
+        .eq('is_public', true);
+
+      if (error) throw error;
+      setProducts(data || []);
+    } catch (error) {
+      console.error('Erro ao buscar produtos:', error);
+    }
+  };
+
   const handleGenerateLink = () => {
+    const codes = catalogData.selectedProducts.split(',').map(code => code.trim()).filter(code => code);
+    
+    if (codes.length === 0) {
+      toast({
+        title: "Erro",
+        description: "Informe os códigos dos produtos para gerar o link.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const baseUrl = window.location.origin;
+    const catalogUrl = `${baseUrl}/catalog?codes=${codes.join(',')}`;
+    
+    navigator.clipboard.writeText(catalogUrl);
+    
     toast({
       title: "Link gerado!",
       description: "Link do catálogo copiado para a área de transferência.",
@@ -42,9 +83,27 @@ export const SendPage = () => {
       return;
     }
 
+    const codes = catalogData.selectedProducts.split(',').map(code => code.trim()).filter(code => code);
+    
+    if (codes.length === 0) {
+      toast({
+        title: "Erro",
+        description: "Informe os códigos dos produtos para enviar.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const baseUrl = window.location.origin;
+    const catalogUrl = `${baseUrl}/catalog?codes=${codes.join(',')}`;
+    const message = `${catalogData.message}\n\nConfira nosso catálogo: ${catalogUrl}`;
+    const whatsappUrl = `https://wa.me/${catalogData.customerPhone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+    
+    window.open(whatsappUrl, '_blank');
+    
     toast({
-      title: "Enviado por WhatsApp!",
-      description: `Catálogo enviado para ${catalogData.customerPhone}.`,
+      title: "WhatsApp aberto!",
+      description: `Mensagem preparada para ${catalogData.customerName || catalogData.customerPhone}.`,
     });
   };
 
@@ -102,8 +161,34 @@ export const SendPage = () => {
                     rows={3}
                   />
                   <p className="text-sm text-muted-foreground mt-1">
-                    Ex: ORG123456, ORG789012, ORG345678
+                    Ex: {products.slice(0, 3).map(p => p.code).join(', ')}
                   </p>
+                  
+                  {products.length > 0 && (
+                    <div className="mt-3">
+                      <p className="text-sm font-medium mb-2">Produtos disponíveis:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {products.map((product) => (
+                          <Button
+                            key={product.id}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const codes = catalogData.selectedProducts.split(',').map(c => c.trim()).filter(c => c);
+                              if (!codes.includes(product.code)) {
+                                setCatalogData({
+                                  ...catalogData,
+                                  selectedProducts: codes.length > 0 ? `${catalogData.selectedProducts}, ${product.code}` : product.code
+                                });
+                              }
+                            }}
+                          >
+                            {product.code} - {product.name}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -179,7 +264,7 @@ export const SendPage = () => {
 
                   <div className="border-t pt-4 text-center">
                     <p className="text-xs text-muted-foreground">
-                      Catálogo gerado com <span className="font-medium text-primary">Organizo</span>
+                      Catálogo gerado com <span className="font-medium text-primary">Catalogin</span>
                     </p>
                   </div>
                 </div>
