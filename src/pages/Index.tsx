@@ -47,6 +47,7 @@ const Index = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
+    console.log('Index: Starting to fetch data...');
     fetchCategories();
     fetchProducts();
     fetchFeaturedProducts();
@@ -60,6 +61,7 @@ const Index = () => {
   }, [searchTerm, selectedCategory, setSearchParams]);
 
   const fetchCategories = async () => {
+    console.log('Index: Fetching categories...');
     try {
       const { data, error } = await supabase
         .from('categories')
@@ -68,24 +70,10 @@ const Index = () => {
 
       if (error) throw error;
       
-      // Get product count for each category
-      const categoriesWithCount = await Promise.all(
-        (data || []).map(async (category) => {
-          const { count } = await supabase
-            .from('products')
-            .select('*', { count: 'exact', head: true })
-            .eq('category_id', category.id)
-            .eq('is_public', true);
-          
-          return {
-            ...category,
-            _count: { products: count || 0 }
-          };
-        })
-      );
-      
-      setCategories(categoriesWithCount);
+      console.log('Index: Categories fetched:', (data || []).length);
+      setCategories((data || []).map(cat => ({ ...cat, _count: { products: 0 } })));
     } catch (error: any) {
+      console.error('Index: Error fetching categories:', error);
       toast({
         title: "Erro ao carregar categorias",
         description: error.message,
@@ -95,6 +83,7 @@ const Index = () => {
   };
 
   const fetchFeaturedProducts = async () => {
+    console.log('Index: Fetching featured products...');
     try {
       const { data, error } = await supabase
         .from('products')
@@ -123,8 +112,10 @@ const Index = () => {
         })
       );
       
+      console.log('Index: Featured products fetched:', productsWithProfiles.length);
       setFeaturedProducts(productsWithProfiles);
     } catch (error: any) {
+      console.error('Index: Error fetching featured products:', error);
       toast({
         title: "Erro ao carregar produtos em destaque",
         description: error.message,
@@ -134,6 +125,7 @@ const Index = () => {
   };
 
   const fetchProducts = async () => {
+    console.log('Index: Fetching products...');
     setIsLoading(true);
     try {
       let query = supabase
@@ -174,8 +166,10 @@ const Index = () => {
         })
       );
       
+      console.log('Index: Products fetched:', productsWithProfiles.length);
       setProducts(productsWithProfiles);
     } catch (error: any) {
+      console.error('Index: Error fetching products:', error);
       toast({
         title: "Erro ao carregar produtos",
         description: error.message,
@@ -187,8 +181,11 @@ const Index = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, [searchTerm, selectedCategory, categories]);
+    if (categories.length > 0) {
+      console.log('Index: Fetching products due to dependency change...');
+      fetchProducts();
+    }
+  }, [searchTerm, selectedCategory]);
 
   const handleContactSeller = (product: Product) => {
     const message = `Olá! Tenho interesse no produto: ${product.name} (${product.code})`;
