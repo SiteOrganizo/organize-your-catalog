@@ -84,6 +84,9 @@ export const CategoriesPage = () => {
   const handleAddCategory = () => {
     if (!newCategory.trim()) return;
     
+    console.log('Adding category, user:', user);
+    console.log('Current categories:', categories);
+    
     const newCat: Category = {
       id: `temp-${Date.now()}`,
       name: newCategory,
@@ -94,9 +97,11 @@ export const CategoriesPage = () => {
     setNewCategory("");
     setHasUnsavedChanges(true);
     
+    console.log('hasUnsavedChanges set to true');
+    
     toast({
-      title: "Categoria adicionada!",
-      description: `A categoria "${newCategory}" foi adicionada. Clique em "Salvar" para persistir.`,
+      title: "Categoria criada!",
+      description: `A categoria "${newCategory}" foi adicionada.`,
     });
   };
 
