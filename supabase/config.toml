@@ -1,1 +1,4 @@
 project_id = "gqpihanzjnwnzrlunujn"
+
+[functions.check-db]
+verify_jwt = false
