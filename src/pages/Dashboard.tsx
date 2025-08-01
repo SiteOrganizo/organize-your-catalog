@@ -37,11 +37,11 @@ export const Dashboard = () => {
         .select('id')
         .eq('user_id', user?.id);
 
-      // Buscar categorias
+      // Buscar categorias criadas pelo usuário
       const { data: categories } = await supabase
         .from('categories')
         .select('id')
-        .eq('user_id', user?.id);
+        .eq('created_by_user_id', user?.id);
 
       setStats({
         products: products?.length || 0,

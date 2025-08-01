@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Package, Zap, Shield, Smartphone, Check } from "lucide-react";
+import { Package, Zap, Shield, Smartphone, Check, Store } from "lucide-react";
 
 const Index = () => {
   return (
@@ -14,22 +14,31 @@ const Index = () => {
             Catalogin
           </h1>
           <h2 className="text-3xl font-semibold text-foreground mb-4">
-            Crie catálogos profissionais para sua loja
+            Marketplace Digital + Catálogo Personalizado
           </h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Organize seus produtos, crie categorias personalizadas e envie catálogos 
-            elegantes para seus clientes em segundos.
+            Divulgue seus produtos no nosso marketplace público e crie catálogos 
+            personalizados para enviar diretamente aos seus clientes.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
             <Link to="/register">
               <Button size="lg" className="gap-2">
                 <Package className="h-5 w-5" />
                 Criar Minha Loja Grátis
               </Button>
             </Link>
+            <Link to="/marketplace">
+              <Button variant="secondary" size="lg" className="gap-2">
+                <Store className="h-5 w-5" />
+                Explorar Marketplace
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="flex justify-center">
             <Link to="/login">
-              <Button variant="outline" size="lg">
+              <Button variant="outline" size="sm">
                 Já tenho uma conta
               </Button>
             </Link>

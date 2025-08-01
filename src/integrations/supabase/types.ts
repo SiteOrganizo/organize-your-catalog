@@ -17,27 +17,27 @@ export type Database = {
       categories: {
         Row: {
           created_at: string
+          created_by_user_id: string | null
           description: string | null
           id: string
           name: string
           updated_at: string
-          user_id: string
         }
         Insert: {
           created_at?: string
+          created_by_user_id?: string | null
           description?: string | null
           id?: string
           name: string
           updated_at?: string
-          user_id: string
         }
         Update: {
           created_at?: string
+          created_by_user_id?: string | null
           description?: string | null
           id?: string
           name?: string
           updated_at?: string
-          user_id?: string
         }
         Relationships: []
       }

@@ -45,7 +45,7 @@ export const CategoriesPage = () => {
       const { data: categoriesData, error: categoriesError } = await supabase
         .from('categories')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('created_by_user_id', user.id)
         .order('created_at', { ascending: true });
 
       if (categoriesError) throw categoriesError;
@@ -144,7 +144,7 @@ export const CategoriesPage = () => {
           .from('categories')
           .insert([{ 
             name: category.name, 
-            user_id: user.id 
+            created_by_user_id: user.id 
           }])
           .select()
           .single();
@@ -205,7 +205,7 @@ export const CategoriesPage = () => {
         .from('categories')
         .delete()
         .eq('id', categoryId)
-        .eq('user_id', user.id);
+        .eq('created_by_user_id', user.id);
 
       if (catError) throw catError;
 
