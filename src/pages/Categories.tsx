@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { FolderOpen, Plus, Trash2 } from "lucide-react";
+import { FolderOpen, Plus, Trash2, Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -28,6 +28,8 @@ export const CategoriesPage = () => {
   const [newSubcategory, setNewSubcategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -79,85 +81,104 @@ export const CategoriesPage = () => {
     }
   };
 
-  const handleAddCategory = async () => {
-    if (!newCategory.trim() || !user) return;
+  const handleAddCategory = () => {
+    if (!newCategory.trim()) return;
     
-    try {
-      const { data, error } = await supabase
-        .from('categories')
-        .insert([{ 
-          name: newCategory, 
-          user_id: user.id 
-        }])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      const newCat: Category = {
-        id: data.id,
-        name: data.name,
-        subcategories: []
-      };
-
-      setCategories([...categories, newCat]);
-      setNewCategory("");
-      
-      toast({
-        title: "Categoria criada!",
-        description: `A categoria "${newCategory}" foi adicionada.`,
-      });
-    } catch (error) {
-      console.error('Error creating category:', error);
-      toast({
-        title: "Erro ao criar categoria",
-        description: "Não foi possível criar a categoria.",
-        variant: "destructive",
-      });
-    }
+    const newCat: Category = {
+      id: `temp-${Date.now()}`,
+      name: newCategory,
+      subcategories: []
+    };
+    
+    setCategories([...categories, newCat]);
+    setNewCategory("");
+    setHasUnsavedChanges(true);
+    
+    toast({
+      title: "Categoria adicionada!",
+      description: `A categoria "${newCategory}" foi adicionada. Clique em "Salvar" para persistir.`,
+    });
   };
 
-  const handleAddSubcategory = async (categoryId: string) => {
-    if (!newSubcategory.trim() || !user) return;
+  const handleAddSubcategory = (categoryId: string) => {
+    if (!newSubcategory.trim()) return;
+    
+    const newSub: Subcategory = {
+      id: `temp-${Date.now()}`,
+      name: newSubcategory
+    };
+
+    setCategories(categories.map(cat => 
+      cat.id === categoryId 
+        ? { ...cat, subcategories: [...cat.subcategories, newSub] }
+        : cat
+    ));
+    
+    setNewSubcategory("");
+    setSelectedCategory(null);
+    setHasUnsavedChanges(true);
+    
+    toast({
+      title: "Subcategoria adicionada!",
+      description: `"${newSubcategory}" foi adicionada. Clique em "Salvar" para persistir.`,
+    });
+  };
+
+  const handleSaveAll = async () => {
+    if (!user || saving) return;
+    
+    setSaving(true);
     
     try {
-      const { data, error } = await supabase
-        .from('subcategories')
-        .insert([{ 
-          name: newSubcategory, 
-          category_id: categoryId,
-          user_id: user.id 
-        }])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      const newSub: Subcategory = {
-        id: data.id,
-        name: data.name
-      };
-
-      setCategories(categories.map(cat => 
-        cat.id === categoryId 
-          ? { ...cat, subcategories: [...cat.subcategories, newSub] }
-          : cat
-      ));
+      // Filter categories that need to be saved (temp IDs)
+      const categoriesToSave = categories.filter(cat => cat.id.startsWith('temp-'));
       
-      setNewSubcategory("");
-      setSelectedCategory(null);
+      for (const category of categoriesToSave) {
+        // Save category
+        const { data: categoryData, error: categoryError } = await supabase
+          .from('categories')
+          .insert([{ 
+            name: category.name, 
+            user_id: user.id 
+          }])
+          .select()
+          .single();
+
+        if (categoryError) throw categoryError;
+
+        // Save subcategories for this category
+        if (category.subcategories.length > 0) {
+          const subcategoriesToInsert = category.subcategories.map(sub => ({
+            name: sub.name,
+            category_id: categoryData.id,
+            user_id: user.id
+          }));
+
+          const { error: subError } = await supabase
+            .from('subcategories')
+            .insert(subcategoriesToInsert);
+
+          if (subError) throw subError;
+        }
+      }
+
+      // Refresh the data from database
+      await fetchCategories();
+      setHasUnsavedChanges(false);
       
       toast({
-        title: "Subcategoria adicionada!",
-        description: `"${newSubcategory}" foi adicionada à categoria.`,
+        title: "Categorias salvas!",
+        description: "Todas as categorias foram salvas com sucesso.",
       });
     } catch (error) {
-      console.error('Error creating subcategory:', error);
+      console.error('Error saving categories:', error);
       toast({
-        title: "Erro ao criar subcategoria",
-        description: "Não foi possível criar a subcategoria.",
+        title: "Erro ao salvar",
+        description: "Não foi possível salvar as categorias.",
         variant: "destructive",
       });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -244,11 +265,24 @@ export const CategoriesPage = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Categorias</h1>
-          <p className="text-muted-foreground">
-            Organize seus produtos em categorias personalizadas
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Categorias</h1>
+            <p className="text-muted-foreground">
+              Organize seus produtos em categorias personalizadas
+            </p>
+          </div>
+          
+          {hasUnsavedChanges && (
+            <Button 
+              onClick={handleSaveAll}
+              disabled={saving}
+              className="gap-2"
+            >
+              <Save className="h-4 w-4" />
+              {saving ? "Salvando..." : "Salvar"}
+            </Button>
+          )}
         </div>
 
         <Card>
