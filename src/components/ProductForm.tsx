@@ -85,7 +85,6 @@ export const ProductForm = ({ product, onSave, onCancel }: ProductFormProps) => 
     const { data, error } = await supabase
       .from('categories')
       .select('id, name')
-      .eq('user_id', user.id)
       .order('name');
 
     if (error) {

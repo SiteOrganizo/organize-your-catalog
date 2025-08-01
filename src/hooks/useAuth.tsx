@@ -59,17 +59,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const createUserProfile = async (user: User) => {
     try {
-      const { error } = await supabase
+      // Check if profile already exists first
+      const { data: existingProfile } = await supabase
         .from('profiles')
-        .insert([
-          {
-            user_id: user.id,
-            display_name: user.user_metadata?.display_name || user.email?.split('@')[0] || 'User'
-          }
-        ]);
-      
-      if (error && error.code !== '23505') { // Ignore duplicate key error
-        console.error('Error creating profile:', error);
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      // Only create if doesn't exist
+      if (!existingProfile) {
+        const { error } = await supabase
+          .from('profiles')
+          .upsert([
+            {
+              user_id: user.id,
+              display_name: user.user_metadata?.display_name || user.email?.split('@')[0] || 'User'
+            }
+          ], {
+            onConflict: 'user_id'
+          });
+        
+        if (error) {
+          console.error('Error creating profile:', error);
+        }
       }
     } catch (error) {
       console.error('Error creating profile:', error);
