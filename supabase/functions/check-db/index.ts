@@ -14,54 +14,42 @@ serve(async (req) => {
     });
   }
 
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  // ⚠️ Teste se a service_role está funcionando de verdade
   try {
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
-
-    const { data, error } = await supabase
-      .from("categories")
-      .select("*")
-      .limit(5);
-
-    if (error) {
-      return new Response(
-        JSON.stringify({
-          ok: false,
-          error: error.message,
-          timestamp: new Date().toISOString(),
-        }),
-        {
-          status: 500,
-          headers: {
-            "Content-Type": "application/json",
-            ...corsHeaders,
-          },
-        }
-      );
-    }
-
+    const { users, error: authError } = await supabase.auth.admin.listUsers({ limit: 1 });
+    if (authError) throw new Error("Service role não tem permissão admin: " + authError.message);
+  } catch (e) {
     return new Response(
       JSON.stringify({
-        ok: true,
-        data,
-        count: data?.length || 0,
+        ok: false,
+        error: "Permissão inválida (service role?) → " + e.message,
         timestamp: new Date().toISOString(),
       }),
       {
-        status: 200,
+        status: 403,
         headers: {
           "Content-Type": "application/json",
           ...corsHeaders,
         },
       }
     );
-  } catch (err) {
+  }
+
+  // Agora tente buscar as categorias
+  const { data, error } = await supabase
+    .from("categories")
+    .select("*")
+    .limit(5);
+
+  if (error) {
     return new Response(
       JSON.stringify({
         ok: false,
-        error: "Unexpected error",
+        error: error.message,
         timestamp: new Date().toISOString(),
       }),
       {
@@ -73,4 +61,20 @@ serve(async (req) => {
       }
     );
   }
+
+  return new Response(
+    JSON.stringify({
+      ok: true,
+      data,
+      count: data?.length || 0,
+      timestamp: new Date().toISOString(),
+    }),
+    {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        ...corsHeaders,
+      },
+    }
+  );
 });
