@@ -3,64 +3,243 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { FolderOpen, Plus, Trash2, Edit } from "lucide-react";
+import { FolderOpen, Plus, Trash2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Category {
   id: string;
   name: string;
-  subcategories: string[];
+  subcategories: Subcategory[];
+}
+
+interface Subcategory {
+  id: string;
+  name: string;
 }
 
 export const CategoriesPage = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [newCategory, setNewCategory] = useState("");
   const [newSubcategory, setNewSubcategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleAddCategory = () => {
-    if (!newCategory.trim()) return;
+  useEffect(() => {
+    if (user) {
+      fetchCategories();
+    }
+  }, [user]);
+
+  const fetchCategories = async () => {
+    if (!user) return;
     
-    const category: Category = {
-      id: Date.now().toString(),
-      name: newCategory,
-      subcategories: []
-    };
-    
-    setCategories([...categories, category]);
-    setNewCategory("");
-    
-    toast({
-      title: "Categoria criada!",
-      description: `A categoria "${newCategory}" foi adicionada.`,
-    });
+    try {
+      // Fetch categories
+      const { data: categoriesData, error: categoriesError } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true });
+
+      if (categoriesError) throw categoriesError;
+
+      // Fetch subcategories
+      const { data: subcategoriesData, error: subcategoriesError } = await supabase
+        .from('subcategories')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true });
+
+      if (subcategoriesError) throw subcategoriesError;
+
+      // Combine categories with their subcategories
+      const categoriesWithSub = categoriesData.map(cat => ({
+        id: cat.id,
+        name: cat.name,
+        subcategories: subcategoriesData
+          .filter(sub => sub.category_id === cat.id)
+          .map(sub => ({ id: sub.id, name: sub.name }))
+      }));
+
+      setCategories(categoriesWithSub);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      toast({
+        title: "Erro ao carregar categorias",
+        description: "Não foi possível carregar as categorias.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleAddSubcategory = (categoryId: string) => {
-    if (!newSubcategory.trim()) return;
+  const handleAddCategory = async () => {
+    if (!newCategory.trim() || !user) return;
     
-    setCategories(categories.map(cat => 
-      cat.id === categoryId 
-        ? { ...cat, subcategories: [...cat.subcategories, newSubcategory] }
-        : cat
-    ));
-    
-    setNewSubcategory("");
-    toast({
-      title: "Subcategoria adicionada!",
-      description: `"${newSubcategory}" foi adicionada à categoria.`,
-    });
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .insert([{ 
+          name: newCategory, 
+          user_id: user.id 
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      const newCat: Category = {
+        id: data.id,
+        name: data.name,
+        subcategories: []
+      };
+
+      setCategories([...categories, newCat]);
+      setNewCategory("");
+      
+      toast({
+        title: "Categoria criada!",
+        description: `A categoria "${newCategory}" foi adicionada.`,
+      });
+    } catch (error) {
+      console.error('Error creating category:', error);
+      toast({
+        title: "Erro ao criar categoria",
+        description: "Não foi possível criar a categoria.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleDeleteCategory = (categoryId: string) => {
-    setCategories(categories.filter(cat => cat.id !== categoryId));
-    toast({
-      title: "Categoria removida",
-      description: "A categoria foi excluída com sucesso.",
-    });
+  const handleAddSubcategory = async (categoryId: string) => {
+    if (!newSubcategory.trim() || !user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('subcategories')
+        .insert([{ 
+          name: newSubcategory, 
+          category_id: categoryId,
+          user_id: user.id 
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      const newSub: Subcategory = {
+        id: data.id,
+        name: data.name
+      };
+
+      setCategories(categories.map(cat => 
+        cat.id === categoryId 
+          ? { ...cat, subcategories: [...cat.subcategories, newSub] }
+          : cat
+      ));
+      
+      setNewSubcategory("");
+      setSelectedCategory(null);
+      
+      toast({
+        title: "Subcategoria adicionada!",
+        description: `"${newSubcategory}" foi adicionada à categoria.`,
+      });
+    } catch (error) {
+      console.error('Error creating subcategory:', error);
+      toast({
+        title: "Erro ao criar subcategoria",
+        description: "Não foi possível criar a subcategoria.",
+        variant: "destructive",
+      });
+    }
   };
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    if (!user) return;
+    
+    try {
+      // First delete all subcategories
+      const { error: subError } = await supabase
+        .from('subcategories')
+        .delete()
+        .eq('category_id', categoryId)
+        .eq('user_id', user.id);
+
+      if (subError) throw subError;
+
+      // Then delete the category
+      const { error: catError } = await supabase
+        .from('categories')
+        .delete()
+        .eq('id', categoryId)
+        .eq('user_id', user.id);
+
+      if (catError) throw catError;
+
+      setCategories(categories.filter(cat => cat.id !== categoryId));
+      
+      toast({
+        title: "Categoria removida",
+        description: "A categoria foi excluída com sucesso.",
+      });
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      toast({
+        title: "Erro ao excluir categoria",
+        description: "Não foi possível excluir a categoria.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteSubcategory = async (subcategoryId: string, categoryId: string) => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('subcategories')
+        .delete()
+        .eq('id', subcategoryId)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      setCategories(categories.map(cat => 
+        cat.id === categoryId 
+          ? { ...cat, subcategories: cat.subcategories.filter(sub => sub.id !== subcategoryId) }
+          : cat
+      ));
+      
+      toast({
+        title: "Subcategoria removida",
+        description: "A subcategoria foi excluída com sucesso.",
+      });
+    } catch (error) {
+      console.error('Error deleting subcategory:', error);
+      toast({
+        title: "Erro ao excluir subcategoria",
+        description: "Não foi possível excluir a subcategoria.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (!user) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <p className="text-muted-foreground">Faça login para gerenciar suas categorias.</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -103,7 +282,13 @@ export const CategoriesPage = () => {
         </Card>
 
         <div className="grid gap-6">
-          {categories.length === 0 ? (
+          {loading ? (
+            <Card>
+              <CardContent className="flex items-center justify-center py-12">
+                <p className="text-muted-foreground">Carregando categorias...</p>
+              </CardContent>
+            </Card>
+          ) : categories.length === 0 ? (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <FolderOpen className="h-12 w-12 text-muted-foreground mb-4" />
@@ -160,12 +345,18 @@ export const CategoriesPage = () => {
                       <div>
                         <Label>Subcategorias:</Label>
                         <div className="mt-2 flex flex-wrap gap-2">
-                          {category.subcategories.map((sub, index) => (
+                          {category.subcategories.map((sub) => (
                             <span
-                              key={index}
-                              className="inline-flex items-center px-3 py-1 bg-accent text-accent-foreground rounded-full text-sm"
+                              key={sub.id}
+                              className="inline-flex items-center px-3 py-1 bg-accent text-accent-foreground rounded-full text-sm gap-2"
                             >
-                              {sub}
+                              {sub.name}
+                              <button
+                                onClick={() => handleDeleteSubcategory(sub.id, category.id)}
+                                className="hover:text-destructive transition-colors"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
                             </span>
                           ))}
                         </div>
