@@ -4,79 +4,85 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Grid, List, MessageCircle, User, LogIn } from "lucide-react";
+import { Search, Grid, List, MessageCircle, User, LogIn, ArrowRight, Sparkles } from "lucide-react";
 
-// Dados mockados para demonstração
+// Dados elegantes para demonstração
 const mockProducts = [
   {
     id: "1",
-    code: "PROD001",
-    name: "Smartphone Galaxy S24",
-    price: 2899.99,
-    description: "Último modelo com câmera profissional e 5G",
-    images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop"],
-    category: "Eletrônicos",
-    seller: "TechStore"
+    code: "PRO001",
+    name: "MacBook Pro M3",
+    price: 12999.99,
+    description: "Performance revolucionária com chip M3 e design premium em alumínio",
+    images: ["https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=500&h=400&fit=crop&q=80"],
+    category: "Technology",
+    seller: "Apple Premium",
+    featured: true
   },
   {
     id: "2", 
-    code: "PROD002",
-    name: "Notebook Dell Inspiron",
-    price: 3499.99,
-    description: "Intel i7, 16GB RAM, SSD 512GB",
-    images: ["https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop"],
-    category: "Informática",
-    seller: "CompuWorld"
+    code: "PRO002",
+    name: "iPhone 15 Pro Max",
+    price: 8999.99,
+    description: "Câmera profissional 48MP, titanium design e A17 Pro chip",
+    images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&h=400&fit=crop&q=80"],
+    category: "Mobile",
+    seller: "TechLux",
+    featured: true
   },
   {
     id: "3",
-    code: "PROD003", 
-    name: "Smart TV 55\" 4K",
-    price: 2199.99,
-    description: "Android TV com HDR e Dolby Vision",
-    images: ["https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=300&fit=crop"],
-    category: "Eletrônicos",
-    seller: "ElectroMax"
+    code: "PRO003", 
+    name: "Sony WH-1000XM5",
+    price: 1899.99,
+    description: "Cancelamento de ruído líder da indústria com qualidade Hi-Res",
+    images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=400&fit=crop&q=80"],
+    category: "Audio",
+    seller: "SoundMaster",
+    featured: false
   },
   {
     id: "4",
-    code: "PROD004",
-    name: "Fone Bluetooth Premium",
-    price: 299.99,
-    description: "Cancelamento de ruído ativo",
-    images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop"],
-    category: "Áudio",
-    seller: "SoundTech"
+    code: "PRO004",
+    name: "iPad Pro 12.9\"",
+    price: 6499.99,
+    description: "Liquid Retina XDR display com chip M2 e Apple Pencil compatível",
+    images: ["https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500&h=400&fit=crop&q=80"],
+    category: "Tablets",
+    seller: "Apple Premium",
+    featured: false
   },
   {
     id: "5",
-    code: "PROD005",
-    name: "Câmera DSLR Canon",
-    price: 4599.99,
-    description: "24MP com lente 18-55mm incluída",
-    images: ["https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop"],
-    category: "Fotografia",
-    seller: "FotoPlus"
+    code: "PRO005",
+    name: "Canon EOS R6 Mark II",
+    price: 15999.99,
+    description: "Mirrorless full-frame com sensor de 24.2MP e gravação 4K",
+    images: ["https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=500&h=400&fit=crop&q=80"],
+    category: "Photography",
+    seller: "PhotoPro",
+    featured: true
   },
   {
     id: "6",
-    code: "PROD006",
-    name: "Tablet iPad Air",
-    price: 3899.99,
-    description: "Chip M1, 256GB, Wi-Fi + Cellular",
-    images: ["https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=300&fit=crop"],
-    category: "Tablets",
-    seller: "AppleStore"
+    code: "PRO006",
+    name: "Tesla Model Y",
+    price: 289999.99,
+    description: "SUV elétrico com autonomia de 540km e Autopilot avançado",
+    images: ["https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=500&h=400&fit=crop&q=80"],
+    category: "Automotive",
+    seller: "Tesla Store",
+    featured: true
   }
 ];
 
 const mockCategories = [
-  { name: "Eletrônicos", count: 15 },
-  { name: "Informática", count: 8 },
-  { name: "Áudio", count: 12 },
-  { name: "Fotografia", count: 6 },
-  { name: "Tablets", count: 4 },
-  { name: "Celulares", count: 20 }
+  { name: "Technology", count: 15, icon: "💻" },
+  { name: "Mobile", count: 8, icon: "📱" },
+  { name: "Audio", count: 12, icon: "🎧" },
+  { name: "Photography", count: 6, icon: "📸" },
+  { name: "Tablets", count: 4, icon: "📱" },
+  { name: "Automotive", count: 3, icon: "🚗" }
 ];
 
 const Index = () => {
@@ -95,6 +101,8 @@ const Index = () => {
     return matchesSearch && matchesCategory;
   });
 
+  const featuredProducts = mockProducts.filter(product => product.featured);
+
   const handleContactSeller = (product: any) => {
     const message = `Olá! Tenho interesse no produto: ${product.name} (${product.code})`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
@@ -102,25 +110,27 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      {/* Header Navigation */}
-      <nav className="bg-black/20 backdrop-blur-sm border-b border-white/10 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3">
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+      {/* Header Navigation - Minimal & Elegant */}
+      <nav className="bg-black/10 backdrop-blur-xl border-b border-white/5 sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3">
-              <span className="font-bold text-orange-400 text-2xl">Catalogin</span>
-              <span className="text-white/80 text-sm">Marketplace</span>
+            <Link to="/" className="group flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-6 w-6 text-orange-400 group-hover:rotate-12 transition-transform duration-300" />
+                <span className="font-light text-white text-2xl tracking-wide">Catalogin</span>
+              </div>
             </Link>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <Link to="/login">
-                <Button variant="outline" size="sm" className="border-white/20 text-white hover:bg-white/10">
+                <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/5 border-0">
                   <LogIn className="mr-2 h-4 w-4" />
                   Entrar
                 </Button>
               </Link>
               <Link to="/register">
-                <Button size="sm" className="bg-orange-500 hover:bg-orange-600">
+                <Button size="sm" className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 shadow-lg">
                   <User className="mr-2 h-4 w-4" />
                   Criar Loja
                 </Button>
@@ -130,75 +140,172 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;utf8,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%222%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+      {/* Hero Section - Minimalist */}
+      <section className="relative py-32 px-6 overflow-hidden">
+        {/* Subtle background elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/3 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        </div>
         
-        <div className="container mx-auto max-w-4xl text-center relative z-10">
-          <h1 className="text-6xl font-bold mb-6 text-white">
-            Catalogin
-            <span className="block text-3xl font-normal text-orange-400 mt-2 italic">
-              Marketplace Digital
-            </span>
-          </h1>
-          
-          <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Descubra produtos únicos de vendedores verificados.<br />
-            Conectamos você aos melhores catálogos digitais do Brasil.
-          </p>
+        <div className="container mx-auto max-w-5xl text-center relative z-10">
+          <div className="animate-fade-in">
+            <h1 className="text-7xl md:text-8xl font-extralight mb-8 text-white tracking-tight">
+              Catalogin
+            </h1>
+            <p className="text-2xl font-light text-slate-300 mb-4 max-w-3xl mx-auto">
+              Marketplace premium para produtos excepcionais
+            </p>
+            <p className="text-lg text-slate-400 mb-16 max-w-2xl mx-auto leading-relaxed">
+              Descubra itens únicos selecionados por curadores especializados
+            </p>
+          </div>
 
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-8">
+          {/* Elegant Search Bar */}
+          <div className="max-w-2xl mx-auto mb-16 animate-scale-in">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-slate-400 h-5 w-5" />
               <Input
-                placeholder="Buscar produtos, categorias..."
+                placeholder="Buscar produtos exclusivos..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 h-14 text-lg bg-white/90 border-white/20 backdrop-blur-sm"
+                className="pl-14 h-16 text-lg bg-white/5 border-white/10 backdrop-blur-xl text-white placeholder:text-slate-400 focus:border-orange-400/50 focus:ring-orange-400/20 rounded-2xl"
               />
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto text-center">
+            <div>
+              <div className="text-3xl font-light text-white mb-2">{mockProducts.length}+</div>
+              <div className="text-sm text-slate-400 uppercase tracking-wide">Produtos</div>
+            </div>
+            <div>
+              <div className="text-3xl font-light text-white mb-2">{mockCategories.length}</div>
+              <div className="text-sm text-slate-400 uppercase tracking-wide">Categorias</div>
+            </div>
+            <div>
+              <div className="text-3xl font-light text-white mb-2">24h</div>
+              <div className="text-sm text-slate-400 uppercase tracking-wide">Suporte</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="py-12 px-4 bg-white/5 backdrop-blur-sm">
+      {/* Featured Products */}
+      {featuredProducts.length > 0 && !selectedCategory && !searchTerm && (
+        <section className="py-24 px-6">
+          <div className="container mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-light text-white mb-4">
+                Produtos em Destaque
+              </h2>
+              <div className="w-24 h-px bg-gradient-to-r from-transparent via-orange-400 to-transparent mx-auto"></div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+              {featuredProducts.map((product, index) => (
+                <Card
+                  key={product.id}
+                  className="group bg-white/3 backdrop-blur-xl border border-white/10 hover:border-orange-400/30 transition-all duration-500 hover:transform hover:scale-[1.02] rounded-3xl overflow-hidden"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <CardContent className="p-0">
+                    <div className="relative h-64 overflow-hidden">
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="absolute top-6 right-6">
+                        <Badge className="bg-black/20 backdrop-blur-sm text-white border border-white/20 rounded-full px-3 py-1">
+                          {product.code}
+                        </Badge>
+                      </div>
+                    </div>
+                    
+                    <div className="p-8">
+                      <div className="flex items-start justify-between mb-4">
+                        <h3 className="font-medium text-xl text-white group-hover:text-orange-400 transition-colors leading-tight">
+                          {product.name}
+                        </h3>
+                        <span className="text-2xl font-light text-orange-400 ml-4">
+                          R$ {product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </span>
+                      </div>
+                      
+                      <div className="flex gap-3 mb-6">
+                        <Badge variant="outline" className="border-white/20 text-white/70 bg-white/5 rounded-full">
+                          {product.category}
+                        </Badge>
+                        <Badge variant="secondary" className="bg-orange-400/10 text-orange-400 border-orange-400/20 rounded-full">
+                          {product.seller}
+                        </Badge>
+                      </div>
+                      
+                      <p className="text-slate-300 text-sm mb-6 leading-relaxed line-clamp-2">
+                        {product.description}
+                      </p>
+                      
+                      <Button 
+                        onClick={() => handleContactSeller(product)}
+                        className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 rounded-xl h-12 group/btn"
+                      >
+                        <MessageCircle className="mr-2 h-4 w-4 group-hover/btn:scale-110 transition-transform" />
+                        Entrar em Contato
+                        <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Categories Section - Refined */}
+      <section className="py-24 px-6 bg-white/[0.02] backdrop-blur-3xl">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold text-white mb-8 text-center">
-            Categorias de Produtos
-          </h2>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-light text-white mb-4">
+              Explore por Categoria
+            </h2>
+            <div className="w-24 h-px bg-gradient-to-r from-transparent via-orange-400 to-transparent mx-auto"></div>
+          </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             <button
               onClick={() => setSelectedCategory('')}
-              className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+              className={`group p-8 rounded-3xl border transition-all duration-300 hover:scale-105 ${
                 selectedCategory === '' 
-                  ? 'border-orange-400 bg-orange-400/20 text-orange-400' 
-                  : 'border-white/20 bg-white/5 text-white hover:border-orange-400/50'
+                  ? 'border-orange-400/50 bg-orange-400/10 text-orange-400' 
+                  : 'border-white/10 bg-white/5 text-white hover:border-orange-400/30 hover:bg-orange-400/5'
               }`}
             >
               <div className="text-center">
-                <div className="text-2xl mb-2">🏪</div>
-                <div className="font-medium text-sm">Todos</div>
-                <div className="text-xs opacity-70">{mockProducts.length}</div>
+                <div className="text-4xl mb-4">🏪</div>
+                <div className="font-medium text-lg mb-2">Todos</div>
+                <div className="text-sm opacity-60">{mockProducts.length} itens</div>
               </div>
             </button>
             
-            {mockCategories.map((category) => (
+            {mockCategories.map((category, index) => (
               <button
                 key={category.name}
                 onClick={() => setSelectedCategory(category.name)}
-                className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                className={`group p-8 rounded-3xl border transition-all duration-300 hover:scale-105 ${
                   selectedCategory === category.name 
-                    ? 'border-orange-400 bg-orange-400/20 text-orange-400' 
-                    : 'border-white/20 bg-white/5 text-white hover:border-orange-400/50'
+                    ? 'border-orange-400/50 bg-orange-400/10 text-orange-400' 
+                    : 'border-white/10 bg-white/5 text-white hover:border-orange-400/30 hover:bg-orange-400/5'
                 }`}
+                style={{ animationDelay: `${index * 50}ms` }}
               >
                 <div className="text-center">
-                  <div className="text-2xl mb-2">📦</div>
-                  <div className="font-medium text-sm truncate">{category.name}</div>
-                  <div className="text-xs opacity-70">{category.count}</div>
+                  <div className="text-4xl mb-4">{category.icon}</div>
+                  <div className="font-medium text-lg mb-2">{category.name}</div>
+                  <div className="text-sm opacity-60">{category.count} itens</div>
                 </div>
               </button>
             ))}
@@ -206,31 +313,33 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Products Section */}
-      <section className="py-12 px-4">
+      {/* All Products Section */}
+      <section className="py-24 px-6">
         <div className="container mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-white">
-              {selectedCategory ? `${selectedCategory}` : 'Todos os Produtos'}
-              <span className="text-lg font-normal text-gray-400 ml-2">
-                ({filteredProducts.length} produtos)
-              </span>
-            </h2>
+          <div className="flex items-center justify-between mb-12">
+            <div>
+              <h2 className="text-4xl font-light text-white mb-2">
+                {selectedCategory ? selectedCategory : 'Catálogo Completo'}
+              </h2>
+              <p className="text-slate-400">
+                {filteredProducts.length} {filteredProducts.length === 1 ? 'produto' : 'produtos'} {selectedCategory ? `em ${selectedCategory}` : 'disponíveis'}
+              </p>
+            </div>
             
             <div className="flex gap-2">
               <Button
-                variant={viewMode === 'grid' ? 'default' : 'outline'}
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setViewMode('grid')}
-                className="border-white/20"
+                className={viewMode === 'grid' ? 'bg-orange-500 hover:bg-orange-600' : 'text-white/60 hover:text-white'}
               >
                 <Grid className="h-4 w-4" />
               </Button>
               <Button
-                variant={viewMode === 'list' ? 'default' : 'outline'}
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setViewMode('list')}
-                className="border-white/20"
+                className={viewMode === 'list' ? 'bg-orange-500 hover:bg-orange-600' : 'text-white/60 hover:text-white'}
               >
                 <List className="h-4 w-4" />
               </Button>
@@ -239,59 +348,69 @@ const Index = () => {
 
           {/* Products Grid */}
           {filteredProducts.length > 0 ? (
-            <div className={`grid gap-6 ${
+            <div className={`grid gap-8 ${
               viewMode === 'grid' 
                 ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
-                : 'grid-cols-1'
+                : 'grid-cols-1 max-w-4xl mx-auto'
             }`}>
-              {filteredProducts.map((product) => (
+              {filteredProducts.map((product, index) => (
                 <Card 
                   key={product.id}
-                  className="group bg-white/5 border-white/10 hover:border-orange-400/50 transition-all duration-300 hover:transform hover:scale-105"
+                  className={`group bg-white/3 backdrop-blur-xl border border-white/10 hover:border-orange-400/30 transition-all duration-500 hover:transform hover:scale-[1.02] rounded-3xl overflow-hidden ${
+                    viewMode === 'list' ? 'flex flex-row h-48' : ''
+                  }`}
+                  style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <CardContent className="p-0">
-                    <div className="relative h-48 overflow-hidden rounded-t-lg">
+                  <CardContent className={`p-0 ${viewMode === 'list' ? 'flex w-full' : ''}`}>
+                    <div className={`relative overflow-hidden ${
+                      viewMode === 'list' 
+                        ? 'w-64 h-48 flex-shrink-0' 
+                        : 'h-64'
+                    }`}>
                       <img
                         src={product.images[0]}
                         alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                       />
                       <div className="absolute top-4 right-4">
-                        <Badge className="bg-orange-500 text-white border-0">
+                        <Badge className="bg-black/20 backdrop-blur-sm text-white border border-white/20 rounded-full">
                           {product.code}
                         </Badge>
                       </div>
                     </div>
                     
-                    <div className="p-6">
-                      <div className="flex items-start justify-between mb-3">
-                        <h3 className="font-bold text-lg text-white group-hover:text-orange-400 transition-colors">
-                          {product.name}
-                        </h3>
-                        <span className="text-xl font-bold text-orange-400">
-                          R$ {product.price.toFixed(2)}
-                        </span>
+                    <div className={`p-6 ${viewMode === 'list' ? 'flex-1 flex flex-col justify-between' : ''}`}>
+                      <div>
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="font-medium text-lg text-white group-hover:text-orange-400 transition-colors">
+                            {product.name}
+                          </h3>
+                          <span className="text-xl font-light text-orange-400 ml-4">
+                            R$ {product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </span>
+                        </div>
+                        
+                        <div className="flex gap-2 mb-4">
+                          <Badge variant="outline" className="border-white/20 text-white/70 bg-white/5 rounded-full text-xs">
+                            {product.category}
+                          </Badge>
+                          <Badge variant="secondary" className="bg-orange-400/10 text-orange-400 border-orange-400/20 rounded-full text-xs">
+                            {product.seller}
+                          </Badge>
+                        </div>
+                        
+                        <p className="text-slate-300 text-sm mb-4 leading-relaxed line-clamp-2">
+                          {product.description}
+                        </p>
                       </div>
-                      
-                      <div className="flex gap-2 mb-4">
-                        <Badge variant="outline" className="border-white/20 text-white/80">
-                          {product.category}
-                        </Badge>
-                        <Badge variant="secondary" className="bg-white/10 text-white/90">
-                          {product.seller}
-                        </Badge>
-                      </div>
-                      
-                      <p className="text-gray-300 text-sm mb-4 line-clamp-2">
-                        {product.description}
-                      </p>
                       
                       <Button 
                         onClick={() => handleContactSeller(product)}
-                        className="w-full bg-orange-500 hover:bg-orange-600 text-white border-0"
+                        className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 rounded-xl h-11 group/btn"
                       >
-                        <MessageCircle className="mr-2 h-4 w-4" />
-                        Entrar em Contato
+                        <MessageCircle className="mr-2 h-4 w-4 group-hover/btn:scale-110 transition-transform" />
+                        Contatar
+                        <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                       </Button>
                     </div>
                   </CardContent>
@@ -299,30 +418,33 @@ const Index = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-2xl font-bold text-white mb-2">Nenhum produto encontrado</h3>
-              <p className="text-gray-400">Tente ajustar sua busca ou filtros</p>
+            <div className="text-center py-24">
+              <div className="text-8xl mb-8 opacity-20">🔍</div>
+              <h3 className="text-3xl font-light text-white mb-4">Nenhum produto encontrado</h3>
+              <p className="text-slate-400 text-lg">Tente ajustar sua busca ou explorar outras categorias</p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-black/30 border-t border-white/10 py-12 px-4">
+      {/* Footer - Minimal */}
+      <footer className="bg-black/20 border-t border-white/5 py-16 px-6">
         <div className="container mx-auto text-center">
-          <h3 className="text-2xl font-bold text-white mb-4">Catalogin</h3>
-          <p className="text-gray-400 mb-6">Conectando vendedores e compradores</p>
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <Sparkles className="h-5 w-5 text-orange-400" />
+            <h3 className="text-2xl font-light text-white">Catalogin</h3>
+          </div>
+          <p className="text-slate-400 mb-8 text-lg">Marketplace premium para produtos excepcionais</p>
           
-          <div className="flex justify-center gap-8 text-sm text-gray-400">
-            <Link to="/sobre" className="hover:text-white transition-colors">Sobre</Link>
-            <Link to="/contato" className="hover:text-white transition-colors">Contato</Link>
-            <Link to="/termos" className="hover:text-white transition-colors">Termos</Link>
-            <Link to="/privacidade" className="hover:text-white transition-colors">Privacidade</Link>
+          <div className="flex justify-center gap-8 text-slate-400 mb-8">
+            <Link to="/sobre" className="hover:text-white transition-colors text-sm uppercase tracking-wide">Sobre</Link>
+            <Link to="/contato" className="hover:text-white transition-colors text-sm uppercase tracking-wide">Contato</Link>
+            <Link to="/termos" className="hover:text-white transition-colors text-sm uppercase tracking-wide">Termos</Link>
+            <Link to="/privacidade" className="hover:text-white transition-colors text-sm uppercase tracking-wide">Privacidade</Link>
           </div>
           
-          <div className="mt-8 pt-8 border-t border-white/10 text-gray-500 text-sm">
-            © 2024 Catalogin. Todos os direitos reservados.
+          <div className="pt-8 border-t border-white/5 text-slate-500 text-sm">
+            © 2024 Catalogin. Crafted with precision.
           </div>
         </div>
       </footer>
