@@ -149,13 +149,21 @@ const Index = () => {
           </div>
 
           {/* Botão para novos produtos */}
-          <Button
-            onClick={handleRefreshProducts}
-            variant="outline"
-            className="border-orange-400/30 text-orange-400 hover:bg-orange-400/10"
-          >
-            Ver novos produtos
-          </Button>
+          <div className="flex gap-4">
+            <Button
+              onClick={handleRefreshProducts}
+              variant="outline"
+              className="border-orange-400/30 text-orange-400 hover:bg-orange-400/10"
+            >
+              Ver novos produtos
+            </Button>
+            <Button
+              onClick={() => navigate('/catalog')}
+              className="bg-orange-500 hover:bg-orange-600 text-white"
+            >
+              Ver catálogo completo
+            </Button>
+          </div>
         </div>
       </section>
 

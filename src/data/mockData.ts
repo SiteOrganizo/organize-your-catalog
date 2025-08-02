@@ -1,4 +1,15 @@
 // Dados mockados expandidos - 20 produtos, 4 para cada vendedor
+
+// Lista de categorias disponíveis
+export const mockCategories = [
+  "Technology",
+  "Audio",
+  "Photography",
+  "Automotive",
+  "Tablets",
+  "Smartphones"
+];
+
 export const mockProducts = [
   // Apple Premium (4 produtos)
   {
