@@ -5,6 +5,8 @@ import ProductDetails from '@/pages/ProductDetails';
 import SellerPage from '@/pages/SellerPage';
 import { Login } from '@/pages/Login';
 import { Register } from '@/pages/Register';
+import { Dashboard } from '@/pages/Dashboard';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { AuthProvider } from '@/hooks/useAuth';
 import { Toaster } from '@/components/ui/toaster';
 
@@ -20,6 +22,11 @@ function App() {
             <Route path="/seller/:sellerId" element={<SellerPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
           </Routes>
           <Toaster />
         </div>
