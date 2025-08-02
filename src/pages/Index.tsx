@@ -4,7 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Grid, List, MessageCircle, User, LogIn, ArrowRight, Sparkles } from "lucide-react";
+import { Search, Grid, List, MessageCircle, User, LogIn, ArrowRight, Sparkles, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 // Dados elegantes para demonstração
 const mockProducts = [
@@ -86,6 +87,7 @@ const mockCategories = [
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -207,8 +209,9 @@ const Index = () => {
               {featuredProducts.map((product, index) => (
                 <Card
                   key={product.id}
-                  className="group bg-white/3 backdrop-blur-xl border border-white/10 hover:border-orange-400/30 transition-all duration-500 hover:transform hover:scale-[1.02] rounded-3xl overflow-hidden"
+                  className="group bg-white/3 backdrop-blur-xl border border-white/10 hover:border-orange-400/30 transition-all duration-500 hover:transform hover:scale-[1.02] rounded-3xl overflow-hidden cursor-pointer"
                   style={{ animationDelay: `${index * 100}ms` }}
+                  onClick={() => navigate(`/product/${product.id}`)}
                 >
                   <CardContent className="p-0">
                     <div className="relative h-64 overflow-hidden">
@@ -222,6 +225,12 @@ const Index = () => {
                         <Badge className="bg-black/20 backdrop-blur-sm text-white border border-white/20 rounded-full px-3 py-1">
                           {product.code}
                         </Badge>
+                      </div>
+                      <div className="absolute bottom-4 left-6">
+                        <div className="flex items-center gap-1 text-white/80 text-sm">
+                          <Eye className="h-3 w-3" />
+                          <span>Ver detalhes</span>
+                        </div>
                       </div>
                     </div>
                     
@@ -249,7 +258,10 @@ const Index = () => {
                       </p>
                       
                       <Button 
-                        onClick={() => handleContactSeller(product)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleContactSeller(product);
+                        }}
                         className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 rounded-xl h-12 group/btn"
                       >
                         <MessageCircle className="mr-2 h-4 w-4 group-hover/btn:scale-110 transition-transform" />
@@ -356,10 +368,11 @@ const Index = () => {
               {filteredProducts.map((product, index) => (
                 <Card 
                   key={product.id}
-                  className={`group bg-white/3 backdrop-blur-xl border border-white/10 hover:border-orange-400/30 transition-all duration-500 hover:transform hover:scale-[1.02] rounded-3xl overflow-hidden ${
+                  className={`group bg-white/3 backdrop-blur-xl border border-white/10 hover:border-orange-400/30 transition-all duration-500 hover:transform hover:scale-[1.02] rounded-3xl overflow-hidden cursor-pointer ${
                     viewMode === 'list' ? 'flex flex-row h-48' : ''
                   }`}
                   style={{ animationDelay: `${index * 50}ms` }}
+                  onClick={() => navigate(`/product/${product.id}`)}
                 >
                   <CardContent className={`p-0 ${viewMode === 'list' ? 'flex w-full' : ''}`}>
                     <div className={`relative overflow-hidden ${
@@ -377,6 +390,14 @@ const Index = () => {
                           {product.code}
                         </Badge>
                       </div>
+                      {viewMode === 'grid' && (
+                        <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="flex items-center gap-1 text-white/80 text-sm">
+                            <Eye className="h-3 w-3" />
+                            <span>Ver detalhes</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
                     
                     <div className={`p-6 ${viewMode === 'list' ? 'flex-1 flex flex-col justify-between' : ''}`}>
@@ -405,7 +426,10 @@ const Index = () => {
                       </div>
                       
                       <Button 
-                        onClick={() => handleContactSeller(product)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleContactSeller(product);
+                        }}
                         className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 rounded-xl h-11 group/btn"
                       >
                         <MessageCircle className="mr-2 h-4 w-4 group-hover/btn:scale-110 transition-transform" />
