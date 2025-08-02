@@ -644,6 +644,387 @@ export const mockProducts = [
     condition: "Novo",
     warranty: "300 meses Tesla",
     featured: false
+  },
+  
+  // Imóveis Prime (3 produtos)
+  {
+    id: "21",
+    code: "IPR001",
+    name: "Apartamento Luxo 3 Quartos - Vila Olímpia",
+    price: 750000.00,
+    description: "Apartamento moderno de 120m² com vista panorâmica e acabamento premium",
+    fullDescription: "Magnífico apartamento de 3 quartos sendo 1 suíte master com closet, localizado no coração da Vila Olímpia. Possui 120m² de área útil, varanda gourmet com churrasqueira, 2 vagas de garagem e depósito. Condomínio completo com piscina, academia, salão de festas e segurança 24h.",
+    images: [
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1560184897-ae75f418493e?w=800&h=600&fit=crop&q=80"
+    ],
+    category: "Imóveis",
+    seller: "Imóveis Prime",
+    sellerId: "imoveis-prime",
+    sellerRating: 4.8,
+    sellerReviews: 156,
+    location: "Vila Olímpia, São Paulo - SP",
+    postedAt: "2024-01-20",
+    views: 1234,
+    likes: 89,
+    specifications: {
+      "Área útil": "120m²",
+      "Quartos": "3 (1 suíte)",
+      "Banheiros": "2",
+      "Vagas": "2",
+      "Andar": "15º",
+      "Condomínio": "R$ 850/mês"
+    },
+    condition: "Pronto para morar",
+    warranty: "Garantia construtora 5 anos",
+    featured: true
+  },
+  {
+    id: "22", 
+    code: "IPR002",
+    name: "Casa Sobrado 4 Quartos - Alphaville",
+    price: 1200000.00,
+    description: "Casa em condomínio fechado com 280m² e área de lazer completa",
+    fullDescription: "Belíssima casa sobrado em condomínio de alto padrão em Alphaville. 4 quartos sendo 2 suítes, sala de estar e jantar integradas, cozinha gourmet, área de lazer com piscina e churrasqueira. Garagem para 4 carros. Condomínio com segurança 24h, clube e área verde.",
+    images: [
+      "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop&q=80"
+    ],
+    category: "Imóveis",
+    seller: "Imóveis Prime", 
+    sellerId: "imoveis-prime",
+    sellerRating: 4.8,
+    sellerReviews: 156,
+    location: "Alphaville, Barueri - SP",
+    postedAt: "2024-01-18",
+    views: 987,
+    likes: 67,
+    specifications: {
+      "Área construída": "280m²",
+      "Quartos": "4 (2 suítes)",
+      "Banheiros": "3",
+      "Vagas": "4",
+      "Terreno": "400m²",
+      "Condomínio": "R$ 650/mês"
+    },
+    condition: "Pronto para morar",
+    warranty: "Garantia construtora 5 anos",
+    featured: false
+  },
+  {
+    id: "23",
+    code: "IPR003", 
+    name: "Apartamento 2 Quartos para Locação - Moema",
+    price: 4500.00,
+    description: "Apartamento mobiliado para locação em localização privilegiada",
+    fullDescription: "Apartamento completamente mobiliado e decorado, ideal para executivos. 2 quartos com ar condicionado, sala ampla, cozinha equipada com eletrodomésticos. Próximo ao metrô e shopping centers. Incluso: móveis, eletrodomésticos e internet.",
+    images: [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop&q=80"
+    ],
+    category: "Imóveis",
+    seller: "Imóveis Prime",
+    sellerId: "imoveis-prime", 
+    sellerRating: 4.8,
+    sellerReviews: 156,
+    location: "Moema, São Paulo - SP",
+    postedAt: "2024-01-22",
+    views: 654,
+    likes: 45,
+    specifications: {
+      "Área útil": "75m²",
+      "Quartos": "2",
+      "Banheiros": "1", 
+      "Vagas": "1",
+      "Andar": "8º",
+      "Mobiliado": "Completo"
+    },
+    condition: "Mobiliado", 
+    warranty: "Contrato de locação",
+    featured: false
+  },
+  
+  // Construtora Elite (3 produtos)
+  {
+    id: "24",
+    code: "CEL001",
+    name: "Lançamento Residencial Jardins Premium",
+    price: 650000.00,
+    description: "Apartamentos de 2 e 3 quartos em torre única no Jardins",
+    fullDescription: "Lançamento exclusivo no bairro mais nobre de São Paulo. Apartamentos de alto padrão com 2 e 3 quartos, varanda gourmet, acabamento premium e localização privilegiada. Entrega prevista para dezembro de 2025. Financiamento direto com a construtora disponível.",
+    images: [
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop&q=80"
+    ],
+    category: "Imóveis",
+    seller: "Construtora Elite",
+    sellerId: "construtora-elite",
+    sellerRating: 4.9,
+    sellerReviews: 203,
+    location: "Jardins, São Paulo - SP", 
+    postedAt: "2024-01-15",
+    views: 1876,
+    likes: 134,
+    specifications: {
+      "Área útil": "85m² a 125m²",
+      "Quartos": "2 ou 3",
+      "Banheiros": "2",
+      "Vagas": "1 ou 2", 
+      "Entrega": "Dez/2025",
+      "Financiamento": "Direto"
+    },
+    condition: "Na planta",
+    warranty: "Garantia PBQP-H 5 anos",
+    featured: true
+  },
+  {
+    id: "25",
+    code: "CEL002",
+    name: "Cobertura Duplex 4 Quartos - Perdizes", 
+    price: 1800000.00,
+    description: "Cobertura duplex com terraço privativo e vista 360° da cidade",
+    fullDescription: "Espetacular cobertura duplex de 220m² com terraço privativo de 100m². 4 quartos sendo 2 suítes, 3 banheiros, sala de estar e jantar integradas, cozinha gourmet e área de lazer no terraço. Vista panorâmica da cidade e acabamento de luxo.",
+    images: [
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop&q=80"
+    ],
+    category: "Imóveis",
+    seller: "Construtora Elite",
+    sellerId: "construtora-elite",
+    sellerRating: 4.9, 
+    sellerReviews: 203,
+    location: "Perdizes, São Paulo - SP",
+    postedAt: "2024-01-12",
+    views: 2341,
+    likes: 187,
+    specifications: {
+      "Área útil": "220m²",
+      "Terraço": "100m²", 
+      "Quartos": "4 (2 suítes)",
+      "Banheiros": "3",
+      "Vagas": "3",
+      "Andar": "Cobertura"
+    },
+    condition: "Pronto para morar",
+    warranty: "Garantia construtora 5 anos",
+    featured: false
+  },
+  {
+    id: "26",
+    code: "CEL003",
+    name: "Studio para Investimento - Vila Madalena",
+    price: 320000.00,
+    description: "Studio moderno ideal para investimento ou primeiro imóvel",
+    fullDescription: "Studio de 38m² perfeitamente planejado na Vila Madalena. Ambiente integrado com cozinha americana, banheiro completo e varanda. Prédio novo com área de lazer e localização estratégica próxima a bares, restaurantes e metrô.",
+    images: [
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&q=80"
+    ],
+    category: "Imóveis",
+    seller: "Construtora Elite",
+    sellerId: "construtora-elite",
+    sellerRating: 4.9,
+    sellerReviews: 203,
+    location: "Vila Madalena, São Paulo - SP",
+    postedAt: "2024-01-25",
+    views: 789,
+    likes: 56,
+    specifications: {
+      "Área útil": "38m²",
+      "Ambiente": "Integrado",
+      "Banheiros": "1",
+      "Vagas": "1",
+      "Andar": "6º",
+      "Condomínio": "R$ 420/mês"
+    },
+    condition: "Pronto para morar",
+    warranty: "Garantia construtora 5 anos", 
+    featured: false
+  },
+  
+  // Residencial Santos (3 produtos)
+  {
+    id: "27",
+    code: "RST001",
+    name: "Casa Térrea 3 Quartos - Zona Sul",
+    price: 580000.00,
+    description: "Casa térrea com quintal amplo em bairro residencial tranquilo",
+    fullDescription: "Casa térrea de 150m² em terreno de 300m². 3 quartos sendo 1 suíte, sala ampla, cozinha, área de serviço e quintal com churrasqueira. Garagem coberta para 2 carros. Bairro residencial com toda infraestrutura e transporte público.",
+    images: [
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop&q=80"
+    ],
+    category: "Imóveis",
+    seller: "Residencial Santos",
+    sellerId: "residencial-santos",
+    sellerRating: 4.6,
+    sellerReviews: 89,
+    location: "Campo Grande, São Paulo - SP",
+    postedAt: "2024-01-19",
+    views: 567,
+    likes: 34,
+    specifications: {
+      "Área construída": "150m²",
+      "Terreno": "300m²",
+      "Quartos": "3 (1 suíte)",
+      "Banheiros": "2",
+      "Vagas": "2",
+      "Quintal": "Amplo"
+    },
+    condition: "Boa conservação",
+    warranty: "Vistoria inclusa",
+    featured: false
+  },
+  {
+    id: "28",
+    code: "RST002", 
+    name: "Apartamento 1 Quarto para Locação - Centro",
+    price: 1800.00,
+    description: "Apartamento compacto e funcional no centro da cidade",
+    fullDescription: "Apartamento de 45m² no centro, próximo a estações de metrô e comércio. 1 quarto, sala, cozinha americana e banheiro. Prédio com portaria 24h. Ideal para profissionais que trabalham no centro ou estudantes. Sem mobília.",
+    images: [
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop&q=80"
+    ],
+    category: "Imóveis",
+    seller: "Residencial Santos",
+    sellerId: "residencial-santos",
+    sellerRating: 4.6,
+    sellerReviews: 89,
+    location: "Centro, São Paulo - SP",
+    postedAt: "2024-01-21",
+    views: 432,
+    likes: 23,
+    specifications: {
+      "Área útil": "45m²",
+      "Quartos": "1",
+      "Banheiros": "1",
+      "Vagas": "0",
+      "Andar": "12º",
+      "Mobiliado": "Não"
+    },
+    condition: "Bom estado",
+    warranty: "Contrato de locação",
+    featured: false
+  },
+  {
+    id: "29",
+    code: "RST003",
+    name: "Sobrado Geminado 2 Quartos - Zona Leste",
+    price: 380000.00,
+    description: "Sobrado geminado em condomínio fechado com área verde",
+    fullDescription: "Sobrado geminado de 110m² em condomínio residencial. 2 quartos, sala, cozinha, banheiro, área de serviço e pequeno quintal. Garagem coberta. Condomínio com portaria, área verde e playground. Financiamento aceito.",
+    images: [
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&q=80"
+    ],
+    category: "Imóveis",
+    seller: "Residencial Santos",
+    sellerId: "residencial-santos",
+    sellerRating: 4.6,
+    sellerReviews: 89,
+    location: "Itaquera, São Paulo - SP",
+    postedAt: "2024-01-17",
+    views: 678,
+    likes: 41,
+    specifications: {
+      "Área construída": "110m²",
+      "Quartos": "2",
+      "Banheiros": "1",
+      "Vagas": "1",
+      "Condomínio": "R$ 280/mês",
+      "Financiamento": "Aceito"
+    },
+    condition: "Ótimo estado",
+    warranty: "Documentação em ordem",
+    featured: false
+  },
+  
+  // Luxury Homes (3 produtos)
+  {
+    id: "30",
+    code: "LUX001",
+    name: "Mansão de Luxo 6 Quartos - Alto de Pinheiros",
+    price: 4500000.00,
+    description: "Mansão exclusiva com piscina, spa e acabamento importado",
+    fullDescription: "Magnífica mansão de 800m² em terreno de 1200m². 6 quartos sendo 4 suítes, sala de cinema, escritório, spa completo, piscina aquecida, quadra de tênis e garagem para 8 carros. Acabamento com materiais importados e sistema de automação completo.",
+    images: [
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&h=600&fit=crop&q=80"
+    ],
+    category: "Imóveis",
+    seller: "Luxury Homes",
+    sellerId: "luxury-homes",
+    sellerRating: 4.9,
+    sellerReviews: 67,
+    location: "Alto de Pinheiros, São Paulo - SP",
+    postedAt: "2024-01-10",
+    views: 3421,
+    likes: 289,
+    specifications: {
+      "Área construída": "800m²",
+      "Terreno": "1200m²",
+      "Quartos": "6 (4 suítes)",
+      "Banheiros": "8",
+      "Vagas": "8",
+      "Extras": "Piscina, spa, quadra"
+    },
+    condition: "Estado impecável",
+    warranty: "Documentação premium",
+    featured: true
+  },
+  {
+    id: "31",
+    code: "LUX002",
+    name: "Penthouse 5 Quartos - Brooklin Novo",
+    price: 2800000.00,
+    description: "Penthouse com 300m² e terraço panorâmico exclusivo",
+    fullDescription: "Excepcional penthouse de 300m² com terraço privativo de 200m². 5 quartos sendo 3 suítes master, sala de estar e jantar integradas, cozinha gourmet, adega climatizada e área gourmet no terraço. Vista panorâmica da cidade e acabamento de alto luxo.",
+    images: [
+      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop&q=80"
+    ],
+    category: "Imóveis",
+    seller: "Luxury Homes",
+    sellerId: "luxury-homes",
+    sellerRating: 4.9,
+    sellerReviews: 67,
+    location: "Brooklin Novo, São Paulo - SP",
+    postedAt: "2024-01-08",
+    views: 2876,
+    likes: 234,
+    specifications: {
+      "Área útil": "300m²",
+      "Terraço": "200m²",
+      "Quartos": "5 (3 suítes)",
+      "Banheiros": "5",
+      "Vagas": "4",
+      "Andar": "Cobertura"
+    },
+    condition: "Luxury finish",
+    warranty: "Garantia premium",
+    featured: true
+  },
+  {
+    id: "32",
+    code: "LUX003",
+    name: "Apartamento High-End 4 Quartos - Itaim Bibi",
+    price: 1650000.00,
+    description: "Apartamento de alto padrão com automação e vista privilegiada",
+    fullDescription: "Sofisticado apartamento de 180m² com automação completa. 4 quartos sendo 2 suítes master, home office, sala de estar e jantar, cozinha gourmet integrada e varanda gourmet. Prédio com concierge, spa, academia e heliponto.",
+    images: [
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=600&fit=crop&q=80"
+    ],
+    category: "Imóveis",
+    seller: "Luxury Homes",
+    sellerId: "luxury-homes", 
+    sellerRating: 4.9,
+    sellerReviews: 67,
+    location: "Itaim Bibi, São Paulo - SP",
+    postedAt: "2024-01-14",
+    views: 1987,
+    likes: 156,
+    specifications: {
+      "Área útil": "180m²",
+      "Quartos": "4 (2 suítes)",
+      "Banheiros": "3",
+      "Vagas": "3",
+      "Automação": "Completa",
+      "Prédio": "Alto luxo"
+    },
+    condition: "Pronto luxury",
+    warranty: "Garantia executiva",
+    featured: false
   }
 ];
 
@@ -755,8 +1136,96 @@ export const mockSellers = {
     responseTime: "6 horas",
     policies: {
       shipping: "Entrega especializada",
-      returns: "Política específica por produto",
+      returns: "Política específica por produto", 
       warranty: "Garantia Tesla até 8 anos"
+    }
+  },
+  "imoveis-prime": {
+    id: "imoveis-prime",
+    name: "Imóveis Prime",
+    description: "Corretora especializada em imóveis de alto padrão",
+    fullDescription: "A Imóveis Prime é uma corretora boutique especializada em imóveis residenciais de alto padrão. Com mais de 15 anos de experiência no mercado paulistano, oferecemos um portfólio exclusivo de apartamentos, casas e coberturas nos melhores bairros de São Paulo. Nossa equipe de corretores especializados oferece atendimento personalizado e consultoria completa.",
+    rating: 4.8,
+    totalReviews: 156,
+    location: "Vila Olímpia, São Paulo - SP",
+    joinedDate: "2009-04-20",
+    totalProducts: 3,
+    totalSales: 234,
+    logo: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=200&h=200&fit=crop&q=80",
+    banner: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&h=400&fit=crop&q=80",
+    categories: ["Imóveis"],
+    verified: true,
+    responseTime: "2 horas",
+    policies: {
+      shipping: "Visitas agendadas",
+      returns: "Garantia documental",
+      warranty: "Acompanhamento jurídico"
+    }
+  },
+  "construtora-elite": {
+    id: "construtora-elite",
+    name: "Construtora Elite",
+    description: "Construtora renomada com projetos de alto padrão",
+    fullDescription: "A Construtora Elite é referência em empreendimentos residenciais de alto padrão em São Paulo. Com mais de 25 anos de mercado, entregamos projetos que combinam localização privilegiada, arquitetura inovadora e acabamento de luxo. Todos os nossos empreendimentos possuem certificação PBQP-H e financiamento próprio disponível.",
+    rating: 4.9,
+    totalReviews: 203,
+    location: "Jardins, São Paulo - SP",
+    joinedDate: "1999-08-15",
+    totalProducts: 3,
+    totalSales: 89,
+    logo: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=200&h=200&fit=crop&q=80",
+    banner: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&h=400&fit=crop&q=80",
+    categories: ["Imóveis"],
+    verified: true,
+    responseTime: "4 horas",
+    policies: {
+      shipping: "Plantão de vendas",
+      returns: "Distrato conforme lei",
+      warranty: "Garantia construtora 5 anos"
+    }
+  },
+  "residencial-santos": {
+    id: "residencial-santos",
+    name: "Residencial Santos",
+    description: "Imobiliária tradicional com foco em locação e venda",
+    fullDescription: "A Residencial Santos é uma imobiliária tradicional com 20 anos de atuação no mercado paulistano. Especializada em locação e venda de imóveis residenciais para todas as faixas de renda. Oferecemos atendimento personalizado, avaliação gratuita e acompanhamento completo em todo o processo de compra, venda ou locação.",
+    rating: 4.6,
+    totalReviews: 89,
+    location: "Santos, São Paulo - SP",
+    joinedDate: "2004-11-10",
+    totalProducts: 3,
+    totalSales: 456,
+    logo: "https://images.unsplash.com/photo-1560472355-536de3962603?w=200&h=200&fit=crop&q=80",
+    banner: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&h=400&fit=crop&q=80",
+    categories: ["Imóveis"],
+    verified: true,
+    responseTime: "3 horas",
+    policies: {
+      shipping: "Visitas flexíveis",
+      returns: "Sem taxa de corretagem",
+      warranty: "Acompanhamento pós-venda"
+    }
+  },
+  "luxury-homes": {
+    id: "luxury-homes",
+    name: "Luxury Homes",
+    description: "Especialista em imóveis de ultra luxo e exclusivos",
+    fullDescription: "A Luxury Homes é especializada em imóveis de ultra luxo e propriedades exclusivas em São Paulo. Atendemos clientes VIP que buscam residências únicas, penthouses, mansões e imóveis com características especiais. Nossa equipe é formada por consultores especializados em alto padrão com network internacional.",
+    rating: 4.9,
+    totalReviews: 67,
+    location: "Alto de Pinheiros, São Paulo - SP",
+    joinedDate: "2015-02-28",
+    totalProducts: 3,
+    totalSales: 45,
+    logo: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=200&h=200&fit=crop&q=80",
+    banner: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&h=400&fit=crop&q=80",
+    categories: ["Imóveis"],
+    verified: true,
+    responseTime: "1 hora",
+    policies: {
+      shipping: "Atendimento VIP",
+      returns: "Consultoria premium",
+      warranty: "Serviço executivo completo"
     }
   }
 };
