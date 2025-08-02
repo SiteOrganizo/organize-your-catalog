@@ -1,8 +1,24 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Index from '@/pages/Index';
+import { Login } from '@/pages/Login';
+import { Register } from '@/pages/Register';
+import { AuthProvider } from '@/hooks/useAuth';
+import { Toaster } from '@/components/ui/toaster';
+
 function App() {
   return (
-    <div style={{ backgroundColor: '#111827', minHeight: '100vh', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem' }}>
-      🧪 Teste funcionando!
-    </div>
+    <AuthProvider>
+      <Router>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+          <Toaster />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
