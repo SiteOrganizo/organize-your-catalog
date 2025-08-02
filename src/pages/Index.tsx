@@ -295,7 +295,7 @@ const Index = () => {
           <div className="flex items-center justify-between mb-12">
             <div>
               <h2 className="text-4xl font-light text-white mb-2">
-                {selectedCategory ? selectedCategory : 'Catálogo Completo'}
+                {selectedCategory ? selectedCategory : 'Todos os Produtos'}
               </h2>
               <p className="text-slate-400">
                 {filteredProducts.length} {filteredProducts.length === 1 ? 'produto' : 'produtos'} {selectedCategory ? `em ${selectedCategory}` : 'disponíveis'}
