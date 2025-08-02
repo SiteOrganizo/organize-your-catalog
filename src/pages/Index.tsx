@@ -37,8 +37,17 @@ const Index = () => {
     return icons[category] || "📦";
   }
 
-  // Filtrar produtos baseado na busca e categoria
-  const filteredProducts = mockProducts.filter(product => {
+  // Função para embaralhar e selecionar produtos aleatórios
+  const getRandomProducts = (products: any[], count: number) => {
+    const shuffled = [...products].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  };
+
+  // Produtos rotativos - 6 aleatórios a cada carregamento
+  const [displayProducts] = useState(() => getRandomProducts(mockProducts, 6));
+
+  // Filtrar produtos exibidos baseado na busca e categoria
+  const filteredProducts = displayProducts.filter(product => {
     const matchesSearch = searchTerm === '' || 
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -48,12 +57,14 @@ const Index = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const featuredProducts = mockProducts.filter(product => product.featured);
-
   const handleContactSeller = (product: any) => {
     const message = `Olá! Tenho interesse no produto: ${product.name} (${product.code})`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
+  };
+
+  const handleRefreshProducts = () => {
+    window.location.reload();
   };
 
   return (
@@ -122,10 +133,10 @@ const Index = () => {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto text-center">
+          <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto text-center mb-8">
             <div>
-              <div className="text-3xl font-light text-white mb-2">{mockProducts.length}+</div>
-              <div className="text-sm text-slate-400 uppercase tracking-wide">Produtos</div>
+              <div className="text-3xl font-light text-white mb-2">6</div>
+              <div className="text-sm text-slate-400 uppercase tracking-wide">Produtos em destaque</div>
             </div>
             <div>
               <div className="text-3xl font-light text-white mb-2">{mockCategories.length}</div>
@@ -136,22 +147,31 @@ const Index = () => {
               <div className="text-sm text-slate-400 uppercase tracking-wide">Suporte</div>
             </div>
           </div>
+
+          {/* Botão para novos produtos */}
+          <Button
+            onClick={handleRefreshProducts}
+            variant="outline"
+            className="border-orange-400/30 text-orange-400 hover:bg-orange-400/10"
+          >
+            Ver novos produtos
+          </Button>
         </div>
       </section>
 
-      {/* Featured Products */}
-      {featuredProducts.length > 0 && !selectedCategory && !searchTerm && (
-        <section className="py-24 px-6">
-          <div className="container mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-light text-white mb-4">
-                Produtos em Destaque
-              </h2>
-              <div className="w-24 h-px bg-gradient-to-r from-transparent via-orange-400 to-transparent mx-auto"></div>
-            </div>
+      {/* Produtos em Destaque - Sempre mostra os 6 rotativos */}
+      <section className="py-24 px-6">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-light text-white mb-4">
+              Produtos em Destaque
+            </h2>
+            <p className="text-slate-400 mb-6">6 produtos selecionados especialmente para você</p>
+            <div className="w-24 h-px bg-gradient-to-r from-transparent via-orange-400 to-transparent mx-auto"></div>
+          </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-              {featuredProducts.map((product, index) => (
+              {filteredProducts.map((product, index) => (
                 <Card
                   key={product.id}
                   className="group bg-white/3 backdrop-blur-xl border border-white/10 hover:border-orange-400/30 transition-all duration-500 hover:transform hover:scale-[1.02] rounded-3xl overflow-hidden cursor-pointer"
@@ -218,9 +238,8 @@ const Index = () => {
                 </Card>
               ))}
             </div>
-          </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Categories Section - Refined */}
       <section className="py-24 px-6 bg-white/[0.02] backdrop-blur-3xl">
