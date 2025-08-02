@@ -32,7 +32,8 @@ const Index = () => {
       "Tablets": "📱",
       "Wearables": "⌚",
       "Automotive": "🚗",
-      "Energy": "⚡"
+      "Energy": "⚡",
+      "Imóveis": "🏠"
     };
     return icons[category] || "📦";
   }
