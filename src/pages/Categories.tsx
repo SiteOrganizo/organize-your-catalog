@@ -411,3 +411,5 @@ export const CategoriesPage = () => {
     </DashboardLayout>
   );
 };
+
+export default CategoriesPage;

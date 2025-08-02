@@ -218,3 +218,5 @@ export const PlansPage = () => {
     </DashboardLayout>
   );
 };
+
+export default PlansPage;

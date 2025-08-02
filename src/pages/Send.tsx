@@ -301,3 +301,5 @@ export const SendPage = () => {
     </DashboardLayout>
   );
 };
+
+export default SendPage;

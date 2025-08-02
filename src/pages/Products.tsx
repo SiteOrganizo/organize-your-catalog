@@ -301,3 +301,5 @@ export const Products = () => {
     </DashboardLayout>
   );
 };
+
+export default Products;
