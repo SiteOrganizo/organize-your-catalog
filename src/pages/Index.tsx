@@ -6,91 +6,36 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Grid, List, MessageCircle, User, LogIn, ArrowRight, Sparkles, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-// Dados elegantes para demonstração
-const mockProducts = [
-  {
-    id: "1",
-    code: "PRO001",
-    name: "MacBook Pro M3",
-    price: 12999.99,
-    description: "Performance revolucionária com chip M3 e design premium em alumínio",
-    images: ["https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=500&h=400&fit=crop&q=80"],
-    category: "Technology",
-    seller: "Apple Premium",
-    featured: true
-  },
-  {
-    id: "2", 
-    code: "PRO002",
-    name: "iPhone 15 Pro Max",
-    price: 8999.99,
-    description: "Câmera profissional 48MP, titanium design e A17 Pro chip",
-    images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&h=400&fit=crop&q=80"],
-    category: "Mobile",
-    seller: "TechLux",
-    featured: true
-  },
-  {
-    id: "3",
-    code: "PRO003", 
-    name: "Sony WH-1000XM5",
-    price: 1899.99,
-    description: "Cancelamento de ruído líder da indústria com qualidade Hi-Res",
-    images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=400&fit=crop&q=80"],
-    category: "Audio",
-    seller: "SoundMaster",
-    featured: false
-  },
-  {
-    id: "4",
-    code: "PRO004",
-    name: "iPad Pro 12.9\"",
-    price: 6499.99,
-    description: "Liquid Retina XDR display com chip M2 e Apple Pencil compatível",
-    images: ["https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500&h=400&fit=crop&q=80"],
-    category: "Tablets",
-    seller: "Apple Premium",
-    featured: false
-  },
-  {
-    id: "5",
-    code: "PRO005",
-    name: "Canon EOS R6 Mark II",
-    price: 15999.99,
-    description: "Mirrorless full-frame com sensor de 24.2MP e gravação 4K",
-    images: ["https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=500&h=400&fit=crop&q=80"],
-    category: "Photography",
-    seller: "PhotoPro",
-    featured: true
-  },
-  {
-    id: "6",
-    code: "PRO006",
-    name: "Tesla Model Y",
-    price: 289999.99,
-    description: "SUV elétrico com autonomia de 540km e Autopilot avançado",
-    images: ["https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=500&h=400&fit=crop&q=80"],
-    category: "Automotive",
-    seller: "Tesla Store",
-    featured: true
-  }
-];
-
-const mockCategories = [
-  { name: "Technology", count: 15, icon: "💻" },
-  { name: "Mobile", count: 8, icon: "📱" },
-  { name: "Audio", count: 12, icon: "🎧" },
-  { name: "Photography", count: 6, icon: "📸" },
-  { name: "Tablets", count: 4, icon: "📱" },
-  { name: "Automotive", count: 3, icon: "🚗" }
-];
+import { mockProducts } from "@/data/mockData";
 
 const Index = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  // Categorias únicas dos produtos
+  const mockCategories = Array.from(
+    new Set(mockProducts.map(product => product.category))
+  ).map(category => ({
+    name: category,
+    count: mockProducts.filter(product => product.category === category).length,
+    icon: getCategoryIcon(category)
+  }));
+
+  function getCategoryIcon(category: string) {
+    const icons: { [key: string]: string } = {
+      "Technology": "💻",
+      "Mobile": "📱", 
+      "Audio": "🎧",
+      "Photography": "📸",
+      "Tablets": "📱",
+      "Wearables": "⌚",
+      "Automotive": "🚗",
+      "Energy": "⚡"
+    };
+    return icons[category] || "📦";
+  }
 
   // Filtrar produtos baseado na busca e categoria
   const filteredProducts = mockProducts.filter(product => {

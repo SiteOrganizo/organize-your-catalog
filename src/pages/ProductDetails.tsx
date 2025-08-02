@@ -4,103 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle, Heart, Share, Sparkles, Star, Eye, MapPin, Clock, Shield } from "lucide-react";
-
-// Dados mockados (mesmo do Index)
-const mockProducts = [
-  {
-    id: "1",
-    code: "PRO001",
-    name: "MacBook Pro M3",
-    price: 12999.99,
-    description: "Performance revolucionária com chip M3 e design premium em alumínio",
-    fullDescription: "O MacBook Pro M3 oferece performance excepcional para profissionais criativos. Com o revolucionário chip M3, você tem poder computacional incomparável para edição de vídeo, desenvolvimento e design. A tela Liquid Retina XDR de 14 polegadas oferece cores vibrantes e contraste infinito. Bateria que dura o dia todo e conectividade Thunderbolt 4 para todos os seus periféricos.",
-    images: [
-      "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800&h=600&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&h=600&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop&q=80"
-    ],
-    category: "Technology",
-    seller: "Apple Premium",
-    sellerRating: 4.9,
-    sellerReviews: 1250,
-    location: "São Paulo, SP",
-    postedAt: "2024-01-15",
-    views: 2847,
-    likes: 156,
-    specifications: {
-      "Processador": "Apple M3 Pro 12-core",
-      "Memória": "18GB RAM unificada",
-      "Armazenamento": "512GB SSD",
-      "Tela": "14\" Liquid Retina XDR",
-      "Gráficos": "GPU 18-core",
-      "Conectividade": "3x Thunderbolt 4, HDMI, MagSafe 3"
-    },
-    condition: "Novo",
-    warranty: "12 meses Apple",
-    featured: true
-  },
-  {
-    id: "2", 
-    code: "PRO002",
-    name: "iPhone 15 Pro Max",
-    price: 8999.99,
-    description: "Câmera profissional 48MP, titanium design e A17 Pro chip",
-    fullDescription: "O iPhone 15 Pro Max redefine o que um smartphone pode fazer. Construído em titânio aeroespacial, é incrivelmente leve e resistente. O sistema de câmera Pro com lente telefoto 5x permite fotos e vídeos profissionais. O chip A17 Pro oferece performance de console em suas mãos.",
-    images: [
-      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&h=600&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&h=600&fit=crop&q=80"
-    ],
-    category: "Mobile",
-    seller: "TechLux",
-    sellerRating: 4.8,
-    sellerReviews: 890,
-    location: "Rio de Janeiro, RJ",
-    postedAt: "2024-01-10",
-    views: 3241,
-    likes: 203,
-    specifications: {
-      "Tela": "6.7\" Super Retina XDR",
-      "Chip": "A17 Pro",
-      "Câmera": "48MP Principal + 12MP Ultra Wide + 12MP Telefoto",
-      "Armazenamento": "256GB",
-      "Material": "Titânio",
-      "Resistência": "IP68"
-    },
-    condition: "Novo lacrado",
-    warranty: "12 meses Apple",
-    featured: true
-  },
-  {
-    id: "3",
-    code: "PRO003", 
-    name: "Sony WH-1000XM5",
-    price: 1899.99,
-    description: "Cancelamento de ruído líder da indústria com qualidade Hi-Res",
-    fullDescription: "Os Sony WH-1000XM5 oferecem a melhor experiência de áudio sem fio. Com cancelamento de ruído adaptativo e qualidade de som Hi-Res, você experimenta cada detalhe da sua música. Bateria de 30 horas e carregamento rápido para uso o dia todo.",
-    images: [
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=600&fit=crop&q=80"
-    ],
-    category: "Audio",
-    seller: "SoundMaster",
-    sellerRating: 4.7,
-    sellerReviews: 445,
-    location: "Belo Horizonte, MG",
-    postedAt: "2024-01-08",
-    views: 1523,
-    likes: 89,
-    specifications: {
-      "Driver": "30mm",
-      "Cancelamento": "Dual Noise Sensor",
-      "Bateria": "30 horas",
-      "Conectividade": "Bluetooth 5.2, NFC",
-      "Codecs": "LDAC, AAC, SBC",
-      "Peso": "250g"
-    },
-    condition: "Novo",
-    warranty: "12 meses Sony",
-    featured: false
-  }
-];
+import { mockProducts } from "@/data/mockData";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -311,7 +215,12 @@ const ProductDetails = () => {
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-white font-medium">{product.seller}</span>
+                    <button
+                      onClick={() => navigate(`/seller/${product.sellerId}`)}
+                      className="text-white font-medium hover:text-orange-400 transition-colors"
+                    >
+                      {product.seller}
+                    </button>
                   </div>
                   <div className="flex items-center gap-2 text-white/60">
                     <MapPin className="h-4 w-4" />
