@@ -1,269 +1,105 @@
-import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, Grid, List, Phone, MessageCircle, Star, Eye, User, LogIn } from "lucide-react";
-import { Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
+import { Search, Grid, List, MessageCircle, User, LogIn } from "lucide-react";
 
-interface Product {
-  id: string;
-  code: string;
-  name: string;
-  price: number | null;
-  description: string | null;
-  images: string[];
-  user_id: string;
-  category_id: string | null;
-  categories?: {
-    name: string;
-  } | null;
-  profiles?: {
-    display_name: string | null;
-  } | null;
-}
+// Dados mockados para demonstração
+const mockProducts = [
+  {
+    id: "1",
+    code: "PROD001",
+    name: "Smartphone Galaxy S24",
+    price: 2899.99,
+    description: "Último modelo com câmera profissional e 5G",
+    images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop"],
+    category: "Eletrônicos",
+    seller: "TechStore"
+  },
+  {
+    id: "2", 
+    code: "PROD002",
+    name: "Notebook Dell Inspiron",
+    price: 3499.99,
+    description: "Intel i7, 16GB RAM, SSD 512GB",
+    images: ["https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=300&fit=crop"],
+    category: "Informática",
+    seller: "CompuWorld"
+  },
+  {
+    id: "3",
+    code: "PROD003", 
+    name: "Smart TV 55\" 4K",
+    price: 2199.99,
+    description: "Android TV com HDR e Dolby Vision",
+    images: ["https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=300&fit=crop"],
+    category: "Eletrônicos",
+    seller: "ElectroMax"
+  },
+  {
+    id: "4",
+    code: "PROD004",
+    name: "Fone Bluetooth Premium",
+    price: 299.99,
+    description: "Cancelamento de ruído ativo",
+    images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop"],
+    category: "Áudio",
+    seller: "SoundTech"
+  },
+  {
+    id: "5",
+    code: "PROD005",
+    name: "Câmera DSLR Canon",
+    price: 4599.99,
+    description: "24MP com lente 18-55mm incluída",
+    images: ["https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop"],
+    category: "Fotografia",
+    seller: "FotoPlus"
+  },
+  {
+    id: "6",
+    code: "PROD006",
+    name: "Tablet iPad Air",
+    price: 3899.99,
+    description: "Chip M1, 256GB, Wi-Fi + Cellular",
+    images: ["https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=300&fit=crop"],
+    category: "Tablets",
+    seller: "AppleStore"
+  }
+];
 
-interface Category {
-  id: string;
-  name: string;
-  description?: string;
-  _count?: {
-    products: number;
-  };
-}
+const mockCategories = [
+  { name: "Eletrônicos", count: 15 },
+  { name: "Informática", count: 8 },
+  { name: "Áudio", count: 12 },
+  { name: "Fotografia", count: 6 },
+  { name: "Tablets", count: 4 },
+  { name: "Celulares", count: 20 }
+];
 
 const Index = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  const [loadingTimeout, setLoadingTimeout] = useState(false);
 
-  useEffect(() => {
-    console.log('Index: TESTE - Comentando fetchs do Supabase');
+  // Filtrar produtos baseado na busca e categoria
+  const filteredProducts = mockProducts.filter(product => {
+    const matchesSearch = searchTerm === '' || 
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase());
     
-    // TESTE: Comentando temporariamente os fetchs de Supabase
-    // Set loading timeout
-    const timeout = setTimeout(() => {
-      console.log('Index: Loading timeout reached, stopping loading...');
-      setIsLoading(false);
-      setLoadingTimeout(true);
-    }, 2000); // Reduzindo timeout para 2s no teste
+    const matchesCategory = selectedCategory === '' || product.category === selectedCategory;
     
-    // TESTE: Comentando fetch de dados do Supabase
-    /*
-    const fetchData = async () => {
-      try {
-        await Promise.all([
-          fetchCategories(),
-          fetchFeaturedProducts()
-        ]);
-        await fetchProducts();
-      } catch (error) {
-        console.error('Index: Error fetching initial data:', error);
-        setIsLoading(false);
-      }
-    };
-    
-    fetchData();
-    */
-    
-    // Para o teste, vamos apenas definir loading como false após 1 segundo
-    setTimeout(() => {
-      console.log('Index: TESTE - Parando loading sem fetchs');
-      setIsLoading(false);
-    }, 1000);
-    
-    return () => clearTimeout(timeout);
-  }, []);
+    return matchesSearch && matchesCategory;
+  });
 
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (searchTerm) params.set('search', searchTerm);
-    if (selectedCategory) params.set('category', selectedCategory);
-    setSearchParams(params);
-  }, [searchTerm, selectedCategory, setSearchParams]);
-
-  const fetchCategories = async () => {
-    console.log('Index: Fetching categories...');
-    try {
-      const { data, error } = await supabase
-        .from('categories')
-        .select('id, name, description')
-        .order('name');
-
-      if (error) throw error;
-      
-      console.log('Index: Categories fetched:', (data || []).length);
-      setCategories((data || []).map(cat => ({ ...cat, _count: { products: 0 } })));
-    } catch (error: any) {
-      console.error('Index: Error fetching categories:', error);
-      toast({
-        title: "Erro ao carregar categorias",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
-  };
-
-  const fetchFeaturedProducts = async () => {
-    console.log('Index: Fetching featured products...');
-    try {
-      const { data, error } = await supabase
-        .from('products')
-        .select(`
-          id, code, name, price, description, images, user_id, category_id,
-          categories (name)
-        `)
-        .eq('is_public', true)
-        .order('created_at', { ascending: false })
-        .limit(6);
-
-      if (error) throw error;
-      
-      const productsWithProfiles = await Promise.all(
-        (data || []).map(async (product) => {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('display_name')
-            .eq('user_id', product.user_id)
-            .single();
-          
-          return {
-            ...product,
-            profiles: profile
-          };
-        })
-      );
-      
-      console.log('Index: Featured products fetched:', productsWithProfiles.length);
-      setFeaturedProducts(productsWithProfiles);
-    } catch (error: any) {
-      console.error('Index: Error fetching featured products:', error);
-      toast({
-        title: "Erro ao carregar produtos em destaque",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
-  };
-
-  const fetchProducts = async () => {
-    console.log('Index: Fetching products...');
-    setIsLoading(true);
-    try {
-      let query = supabase
-        .from('products')
-        .select(`
-          id, code, name, price, description, images, user_id, category_id,
-          categories (name)
-        `)
-        .eq('is_public', true);
-
-      if (selectedCategory) {
-        const category = categories.find(c => c.name === selectedCategory);
-        if (category) {
-          query = query.eq('category_id', category.id);
-        }
-      }
-
-      if (searchTerm) {
-        query = query.or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`);
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false });
-
-      if (error) throw error;
-      
-      const productsWithProfiles = await Promise.all(
-        (data || []).map(async (product) => {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('display_name')
-            .eq('user_id', product.user_id)
-            .single();
-          
-          return {
-            ...product,
-            profiles: profile
-          };
-        })
-      );
-      
-      console.log('Index: Products fetched:', productsWithProfiles.length);
-      setProducts(productsWithProfiles);
-    } catch (error: any) {
-      console.error('Index: Error fetching products:', error);
-      toast({
-        title: "Erro ao carregar produtos",
-        description: error.message,
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (categories.length > 0) {
-      console.log('Index: Fetching products due to dependency change...');
-      fetchProducts();
-    }
-  }, [searchTerm, selectedCategory]);
-
-  const handleContactSeller = (product: Product) => {
+  const handleContactSeller = (product: any) => {
     const message = `Olá! Tenho interesse no produto: ${product.name} (${product.code})`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
-
-  // Force show content if loading timeout or if there are already some products
-  if (isLoading && !loadingTimeout && products.length === 0 && featuredProducts.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center mb-8">
-            <div className="h-12 bg-white/10 rounded w-80 mx-auto mb-4 animate-pulse"></div>
-            <div className="h-6 bg-white/10 rounded w-96 mx-auto animate-pulse"></div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <Card key={i} className="animate-pulse bg-white/5 border-white/10">
-                <CardContent className="p-4">
-                  <div className="h-48 bg-white/10 rounded mb-4"></div>
-                  <div className="h-4 bg-white/10 rounded mb-2"></div>
-                  <div className="h-3 bg-white/10 rounded w-2/3 mb-2"></div>
-                  <div className="h-6 bg-white/10 rounded w-1/2"></div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          
-          {/* Show message after 5 seconds */}
-          <div className="text-center mt-8">
-            <p className="text-white/60">Carregando marketplace...</p>
-            <p className="text-white/40 text-sm mt-2">Se demorar muito, clique para continuar</p>
-            <Button 
-              onClick={() => setIsLoading(false)}
-              variant="outline"
-              className="mt-4 border-orange-400 text-orange-400 hover:bg-orange-400/20"
-            >
-              Continuar sem dados
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -345,13 +181,13 @@ const Index = () => {
               <div className="text-center">
                 <div className="text-2xl mb-2">🏪</div>
                 <div className="font-medium text-sm">Todos</div>
-                <div className="text-xs opacity-70">{products.length}</div>
+                <div className="text-xs opacity-70">{mockProducts.length}</div>
               </div>
             </button>
             
-            {categories.slice(0, 11).map((category) => (
+            {mockCategories.map((category) => (
               <button
-                key={category.id}
+                key={category.name}
                 onClick={() => setSelectedCategory(category.name)}
                 className={`p-4 rounded-xl border-2 transition-all duration-200 ${
                   selectedCategory === category.name 
@@ -362,7 +198,7 @@ const Index = () => {
                 <div className="text-center">
                   <div className="text-2xl mb-2">📦</div>
                   <div className="font-medium text-sm truncate">{category.name}</div>
-                  <div className="text-xs opacity-70">{category._count?.products || 0}</div>
+                  <div className="text-xs opacity-70">{category.count}</div>
                 </div>
               </button>
             ))}
@@ -370,119 +206,23 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Products */}
-      {featuredProducts.length > 0 && !selectedCategory && !searchTerm && (
-        <section className="py-12 px-4">
-          <div className="container mx-auto">
-            <h2 className="text-3xl font-bold text-white mb-8 text-center">
-              Produtos em Destaque
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {featuredProducts.map((product) => (
-                <div
-                  key={product.id}
-                  className="group relative bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/10 hover:border-orange-400/50 transition-all duration-300 hover:transform hover:scale-105"
-                >
-                  <div className="relative h-64 overflow-hidden">
-                    {product.images.length > 0 ? (
-                      <img
-                        src={product.images[0]}
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
-                        <span className="text-white/60 text-lg">📦</span>
-                      </div>
-                    )}
-                    
-                    <div className="absolute top-4 right-4">
-                      <Badge className="bg-orange-500 text-white border-0">
-                        {product.code}
-                      </Badge>
-                    </div>
-                    
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                  
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-3">
-                      <h3 className="font-bold text-lg text-white group-hover:text-orange-400 transition-colors">
-                        {product.name}
-                      </h3>
-                      {product.price && (
-                        <span className="text-xl font-bold text-orange-400">
-                          R$ {product.price.toFixed(2)}
-                        </span>
-                      )}
-                    </div>
-                    
-                    <div className="flex gap-2 mb-4">
-                      {product.categories && (
-                        <Badge variant="outline" className="border-white/20 text-white/80">
-                          {product.categories.name}
-                        </Badge>
-                      )}
-                      {product.profiles?.display_name && (
-                        <Badge variant="secondary" className="bg-white/10 text-white/90">
-                          {product.profiles.display_name}
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    {product.description && (
-                      <p className="text-gray-300 text-sm mb-4 line-clamp-2">
-                        {product.description}
-                      </p>
-                    )}
-                    
-                    <Button 
-                      onClick={() => handleContactSeller(product)}
-                      className="w-full bg-orange-500 hover:bg-orange-600 text-white border-0"
-                    >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      Entrar em Contato
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* All Products */}
+      {/* Products Section */}
       <section className="py-12 px-4">
         <div className="container mx-auto">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-bold text-white">
               {selectedCategory ? `${selectedCategory}` : 'Todos os Produtos'}
               <span className="text-lg font-normal text-gray-400 ml-2">
-                ({products.length} produtos)
+                ({filteredProducts.length} produtos)
               </span>
             </h2>
             
-            <div className="flex items-center gap-2">
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-48 bg-white/10 border-white/20 text-white">
-                  <SelectValue placeholder="Filtrar por categoria" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">Todas as categorias</SelectItem>
-                  {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.name}>
-                      {category.name} ({category._count?.products || 0})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
+            <div className="flex gap-2">
               <Button
                 variant={viewMode === 'grid' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('grid')}
-                className="bg-white/10 border-white/20"
+                className="border-white/20"
               >
                 <Grid className="h-4 w-4" />
               </Button>
@@ -490,131 +230,99 @@ const Index = () => {
                 variant={viewMode === 'list' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setViewMode('list')}
-                className="bg-white/10 border-white/20"
+                className="border-white/20"
               >
                 <List className="h-4 w-4" />
               </Button>
             </div>
           </div>
 
-          {products.length === 0 ? (
-            <div className="text-center py-20">
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-2xl font-semibold text-white mb-2">
-                Nenhum produto encontrado
-              </h3>
-              <p className="text-gray-400 text-lg">
-                Tente ajustar seus filtros de busca ou explore outras categorias
-              </p>
-              {selectedCategory && (
-                <Button 
-                  onClick={() => setSelectedCategory('')}
-                  variant="outline"
-                  className="mt-4 border-orange-400 text-orange-400 hover:bg-orange-400/20"
-                >
-                  Ver todos os produtos
-                </Button>
-              )}
-            </div>
-          ) : (
-            <div className={
+          {/* Products Grid */}
+          {filteredProducts.length > 0 ? (
+            <div className={`grid gap-6 ${
               viewMode === 'grid' 
-                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-                : "space-y-4"
-            }>
-              {products.map((product) => (
-                <div
+                ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' 
+                : 'grid-cols-1'
+            }`}>
+              {filteredProducts.map((product) => (
+                <Card 
                   key={product.id}
-                  className={`group bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-orange-400/50 transition-all duration-300 ${
-                    viewMode === 'list' ? 'flex flex-row' : 'hover:transform hover:scale-105'
-                  }`}
+                  className="group bg-white/5 border-white/10 hover:border-orange-400/50 transition-all duration-300 hover:transform hover:scale-105"
                 >
-                  <div className={viewMode === 'list' ? 'w-48 flex-shrink-0' : 'relative'}>
-                    {product.images.length > 0 ? (
+                  <CardContent className="p-0">
+                    <div className="relative h-48 overflow-hidden rounded-t-lg">
                       <img
                         src={product.images[0]}
                         alt={product.name}
-                        className={`object-cover group-hover:scale-110 transition-transform duration-300 ${
-                          viewMode === 'list' ? 'w-full h-32' : 'w-full h-48'
-                        }`}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
-                    ) : (
-                      <div className={`bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center ${
-                        viewMode === 'list' ? 'w-full h-32' : 'w-full h-48'
-                      }`}>
-                        <span className="text-white/60 text-lg">📦</span>
+                      <div className="absolute top-4 right-4">
+                        <Badge className="bg-orange-500 text-white border-0">
+                          {product.code}
+                        </Badge>
                       </div>
-                    )}
-                    <Badge className="absolute top-2 right-2 bg-orange-500 text-white border-0">
-                      {product.code}
-                    </Badge>
-                  </div>
-                  
-                  <div className={`p-4 ${viewMode === 'list' ? 'flex-1 flex flex-col justify-between' : ''}`}>
-                    <div>
-                      <div className="flex items-start justify-between mb-2">
-                        <h3 className="font-semibold text-lg text-white group-hover:text-orange-400 transition-colors">
-                          {product.name}
-                        </h3>
-                        {product.price && (
-                          <span className="text-lg font-bold text-orange-400 ml-2">
-                            R$ {product.price.toFixed(2)}
-                          </span>
-                        )}
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {product.categories && (
-                          <Badge variant="outline" className="border-white/20 text-white/80">
-                            {product.categories.name}
-                          </Badge>
-                        )}
-                        {product.profiles?.display_name && (
-                          <Badge variant="secondary" className="bg-white/10 text-white/90">
-                            {product.profiles.display_name}
-                          </Badge>
-                        )}
-                      </div>
-                      
-                      {product.description && (
-                        <p className="text-gray-300 text-sm mb-4 line-clamp-2">
-                          {product.description}
-                        </p>
-                      )}
                     </div>
                     
-                    <Button 
-                      onClick={() => handleContactSeller(product)}
-                      className="w-full bg-orange-500 hover:bg-orange-600 text-white border-0"
-                    >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      Entrar em Contato
-                    </Button>
-                  </div>
-                </div>
+                    <div className="p-6">
+                      <div className="flex items-start justify-between mb-3">
+                        <h3 className="font-bold text-lg text-white group-hover:text-orange-400 transition-colors">
+                          {product.name}
+                        </h3>
+                        <span className="text-xl font-bold text-orange-400">
+                          R$ {product.price.toFixed(2)}
+                        </span>
+                      </div>
+                      
+                      <div className="flex gap-2 mb-4">
+                        <Badge variant="outline" className="border-white/20 text-white/80">
+                          {product.category}
+                        </Badge>
+                        <Badge variant="secondary" className="bg-white/10 text-white/90">
+                          {product.seller}
+                        </Badge>
+                      </div>
+                      
+                      <p className="text-gray-300 text-sm mb-4 line-clamp-2">
+                        {product.description}
+                      </p>
+                      
+                      <Button 
+                        onClick={() => handleContactSeller(product)}
+                        className="w-full bg-orange-500 hover:bg-orange-600 text-white border-0"
+                      >
+                        <MessageCircle className="mr-2 h-4 w-4" />
+                        Entrar em Contato
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4">🔍</div>
+              <h3 className="text-2xl font-bold text-white mb-2">Nenhum produto encontrado</h3>
+              <p className="text-gray-400">Tente ajustar sua busca ou filtros</p>
             </div>
           )}
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-black/50 backdrop-blur-sm border-t border-white/10 mt-20">
-        <div className="container mx-auto px-4 py-12">
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <span className="font-bold text-orange-400 text-3xl">Catalogin</span>
-              <span className="text-white/80 text-lg">Marketplace</span>
-            </div>
-            <p className="text-gray-400 text-lg mb-8">
-              Conectando vendedores e compradores em todo o Brasil
-            </p>
-            
-            <div className="flex justify-center gap-8 text-sm text-gray-400">
-              <Link to="/" className="hover:text-orange-400 transition-colors">Início</Link>
-              <Link to="/login" className="hover:text-orange-400 transition-colors">Login</Link>
-              <Link to="/register" className="hover:text-orange-400 transition-colors">Cadastrar Loja</Link>
-            </div>
+      <footer className="bg-black/30 border-t border-white/10 py-12 px-4">
+        <div className="container mx-auto text-center">
+          <h3 className="text-2xl font-bold text-white mb-4">Catalogin</h3>
+          <p className="text-gray-400 mb-6">Conectando vendedores e compradores</p>
+          
+          <div className="flex justify-center gap-8 text-sm text-gray-400">
+            <Link to="/sobre" className="hover:text-white transition-colors">Sobre</Link>
+            <Link to="/contato" className="hover:text-white transition-colors">Contato</Link>
+            <Link to="/termos" className="hover:text-white transition-colors">Termos</Link>
+            <Link to="/privacidade" className="hover:text-white transition-colors">Privacidade</Link>
+          </div>
+          
+          <div className="mt-8 pt-8 border-t border-white/10 text-gray-500 text-sm">
+            © 2024 Catalogin. Todos os direitos reservados.
           </div>
         </div>
       </footer>
