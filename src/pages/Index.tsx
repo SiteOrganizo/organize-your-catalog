@@ -48,16 +48,18 @@ const Index = () => {
   const [loadingTimeout, setLoadingTimeout] = useState(false);
 
   useEffect(() => {
-    console.log('Index: Starting to fetch data...');
+    console.log('Index: TESTE - Comentando fetchs do Supabase');
     
+    // TESTE: Comentando temporariamente os fetchs de Supabase
     // Set loading timeout
     const timeout = setTimeout(() => {
       console.log('Index: Loading timeout reached, stopping loading...');
       setIsLoading(false);
       setLoadingTimeout(true);
-    }, 8000);
+    }, 2000); // Reduzindo timeout para 2s no teste
     
-    // Fetch data
+    // TESTE: Comentando fetch de dados do Supabase
+    /*
     const fetchData = async () => {
       try {
         await Promise.all([
@@ -72,6 +74,13 @@ const Index = () => {
     };
     
     fetchData();
+    */
+    
+    // Para o teste, vamos apenas definir loading como false após 1 segundo
+    setTimeout(() => {
+      console.log('Index: TESTE - Parando loading sem fetchs');
+      setIsLoading(false);
+    }, 1000);
     
     return () => clearTimeout(timeout);
   }, []);
