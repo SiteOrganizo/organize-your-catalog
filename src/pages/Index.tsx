@@ -45,12 +45,35 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
 
   useEffect(() => {
     console.log('Index: Starting to fetch data...');
-    fetchCategories();
-    fetchProducts();
-    fetchFeaturedProducts();
+    
+    // Set loading timeout
+    const timeout = setTimeout(() => {
+      console.log('Index: Loading timeout reached, stopping loading...');
+      setIsLoading(false);
+      setLoadingTimeout(true);
+    }, 8000);
+    
+    // Fetch data
+    const fetchData = async () => {
+      try {
+        await Promise.all([
+          fetchCategories(),
+          fetchFeaturedProducts()
+        ]);
+        await fetchProducts();
+      } catch (error) {
+        console.error('Index: Error fetching initial data:', error);
+        setIsLoading(false);
+      }
+    };
+    
+    fetchData();
+    
+    return () => clearTimeout(timeout);
   }, []);
 
   useEffect(() => {
@@ -193,7 +216,8 @@ const Index = () => {
     window.open(whatsappUrl, '_blank');
   };
 
-  if (isLoading) {
+  // Force show content if loading timeout or if there are already some products
+  if (isLoading && !loadingTimeout && products.length === 0 && featuredProducts.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <div className="container mx-auto px-4 py-8">
@@ -213,6 +237,19 @@ const Index = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+          
+          {/* Show message after 5 seconds */}
+          <div className="text-center mt-8">
+            <p className="text-white/60">Carregando marketplace...</p>
+            <p className="text-white/40 text-sm mt-2">Se demorar muito, clique para continuar</p>
+            <Button 
+              onClick={() => setIsLoading(false)}
+              variant="outline"
+              className="mt-4 border-orange-400 text-orange-400 hover:bg-orange-400/20"
+            >
+              Continuar sem dados
+            </Button>
           </div>
         </div>
       </div>
