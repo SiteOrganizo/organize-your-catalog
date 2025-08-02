@@ -3,11 +3,12 @@
 // Lista de categorias disponíveis
 export const mockCategories = [
   "Technology",
-  "Audio",
+  "Audio", 
   "Photography",
   "Automotive",
   "Tablets",
-  "Smartphones"
+  "Smartphones",
+  "Imóveis"
 ];
 
 export const mockProducts = [
