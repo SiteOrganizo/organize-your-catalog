@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Send, Link, FileText, MessageCircle, Eye } from "lucide-react";
+import { Send, Link, FileText, MessageCircle, Eye, Home } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { Link as RouterLink } from "react-router-dom";
 
 export const SendPage = () => {
   const { toast } = useToast();
@@ -279,6 +280,13 @@ export const SendPage = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
+                <RouterLink to="/">
+                  <Button variant="outline" className="w-full gap-2">
+                    <Home className="h-4 w-4" />
+                    Ir para Página Inicial
+                  </Button>
+                </RouterLink>
+
                 <Button onClick={handleGenerateLink} variant="outline" className="w-full gap-2">
                   <Link className="h-4 w-4" />
                   Gerar Link Compartilhável
