@@ -181,7 +181,11 @@ const Index = () => {
               <h3 className="font-semibold mb-2">Ofertas melhores avaliadas</h3>
               <div className="grid grid-cols-2 gap-2">
                 {filteredProducts.slice(0, 2).map((product) => (
-                  <div key={product.id} className="text-center">
+                  <div 
+                    key={product.id} 
+                    className="text-center cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => navigate(`/product/${product.id}`)}
+                  >
                     <img 
                       src={product.images?.[0] || "/placeholder.svg"} 
                       alt={product.name}
@@ -231,7 +235,11 @@ const Index = () => {
           <h2 className="text-2xl font-bold mb-6">Mais Vendidos em Eletrônicos</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
             {filteredProducts.slice(0, 8).map((product) => (
-              <div key={product.id} className="group cursor-pointer">
+              <div 
+                key={product.id} 
+                className="group cursor-pointer"
+                onClick={() => navigate(`/product/${product.id}`)}
+              >
                 <div className="bg-gray-50 rounded-lg p-4 mb-2 group-hover:shadow-md transition-shadow">
                   <img 
                     src={product.images?.[0] || "/placeholder.svg"} 
@@ -278,7 +286,7 @@ const Index = () => {
       <div className="bg-white py-8">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card className="p-6">
+            <Card className="p-6 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/marketplace')}>
               <h3 className="font-bold mb-4">Navegue por Ambiente</h3>
               <div className="space-y-2">
                 <img src="/placeholder.svg" alt="Room" className="w-full h-20 object-cover rounded" />
@@ -286,7 +294,7 @@ const Index = () => {
               </div>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-6 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/marketplace')}>
               <h3 className="font-bold mb-4">Papelaria com Frete GRÁTIS Prime</h3>
               <div className="space-y-2">
                 <img src="/placeholder.svg" alt="Stationery" className="w-full h-20 object-cover rounded" />
@@ -294,7 +302,7 @@ const Index = () => {
               </div>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-6 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/marketplace')}>
               <h3 className="font-bold mb-4">Beleza com Frete GRÁTIS Prime</h3>
               <div className="space-y-2">
                 <img src="/placeholder.svg" alt="Beauty" className="w-full h-20 object-cover rounded" />
@@ -302,7 +310,7 @@ const Index = () => {
               </div>
             </Card>
 
-            <Card className="p-6">
+            <Card className="p-6 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/marketplace')}>
               <h3 className="font-bold mb-4">Confira Kits de Produto</h3>
               <div className="space-y-2">
                 <img src="/placeholder.svg" alt="Kits" className="w-full h-20 object-cover rounded" />
