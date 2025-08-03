@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle, Heart, Share, Sparkles, Star, Eye, MapPin, Clock, Shield } from "lucide-react";
-import { mockProducts } from "@/data/mockData";
+import { supabase } from "@/integrations/supabase/client";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -14,13 +14,29 @@ const ProductDetails = () => {
   const [isLiked, setIsLiked] = useState(false);
 
   useEffect(() => {
-    const foundProduct = mockProducts.find(p => p.id === id);
-    if (foundProduct) {
-      setProduct(foundProduct);
+    fetchProduct();
+  }, [id]);
+
+  const fetchProduct = async () => {
+    if (!id) return;
+    
+    const { data } = await supabase
+      .from('products')
+      .select(`
+        *,
+        categories (name),
+        profiles (display_name)
+      `)
+      .eq('id', id)
+      .eq('is_public', true)
+      .single();
+    
+    if (data) {
+      setProduct(data);
     } else {
       navigate('/');
     }
-  }, [id, navigate]);
+  };
 
   const handleContactSeller = () => {
     if (!product) return;

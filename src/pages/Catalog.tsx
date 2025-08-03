@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { mockProducts, mockCategories } from '@/data/mockData';
+import { supabase } from "@/integrations/supabase/client";
 import { Search, Grid, Heart, Share2 } from 'lucide-react';
 
 export default function Catalog() {
@@ -20,8 +20,40 @@ export default function Catalog() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [products, setProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
   
   const itemsPerPage = 10;
+
+  useEffect(() => {
+    fetchProducts();
+    fetchCategories();
+  }, []);
+
+  const fetchProducts = async () => {
+    const { data } = await supabase
+      .from('products')
+      .select(`
+        *,
+        categories (name),
+        profiles (display_name)
+      `)
+      .eq('is_public', true);
+    
+    if (data) {
+      setProducts(data);
+    }
+  };
+
+  const fetchCategories = async () => {
+    const { data } = await supabase
+      .from('categories')
+      .select('name');
+    
+    if (data) {
+      setCategories(data.map(cat => cat.name));
+    }
+  };
 
   const getCategoryIcon = (category: string) => {
     const icons: { [key: string]: string } = {
@@ -41,12 +73,12 @@ export default function Catalog() {
 
   // Filtrar produtos
   const filteredProducts = useMemo(() => {
-    return mockProducts.filter(product => {
+    return products.filter(product => {
       const matchesSearch = searchTerm === '' || 
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase());
+        product.description?.toLowerCase().includes(searchTerm.toLowerCase());
       
-      const matchesCategory = selectedCategory === '' || product.category === selectedCategory;
+      const matchesCategory = selectedCategory === '' || product.categories?.name === selectedCategory;
       
       return matchesSearch && matchesCategory;
     });
@@ -134,7 +166,7 @@ export default function Catalog() {
                     Todas as categorias
                   </button>
                   
-                  {mockCategories.map((category) => (
+                  {categories.map((category) => (
                     <button
                       key={category}
                       onClick={() => handleCategoryChange(category)}
@@ -166,11 +198,11 @@ export default function Catalog() {
                       onClick={() => navigate(`/product/${product.id}`)}
                     >
                       <div className="relative aspect-square overflow-hidden">
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
+                         <img
+                           src={product.images?.[0] || "/placeholder.svg"}
+                           alt={product.name}
+                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                         />
                         <div className="absolute top-3 right-3 flex gap-2">
                           <Button
                             size="sm"
@@ -198,9 +230,9 @@ export default function Catalog() {
                       </div>
                       
                       <div className="p-4">
-                        <Badge variant="secondary" className="mb-2 bg-orange-400/20 text-orange-400 border-0">
-                          {product.category}
-                        </Badge>
+                         <Badge variant="secondary" className="mb-2 bg-orange-400/20 text-orange-400 border-0">
+                           {product.categories?.name || "Sem categoria"}
+                         </Badge>
                         
                         <h3 className="font-medium text-white mb-2 line-clamp-2 group-hover:text-orange-400 transition-colors">
                           {product.name}
@@ -211,9 +243,9 @@ export default function Catalog() {
                         </p>
                         
                         <div className="flex items-center justify-between">
-                          <div className="text-lg font-semibold text-orange-400">
-                            R$ {product.price}
-                          </div>
+                           <div className="text-lg font-semibold text-orange-400">
+                             R$ {Number(product.price).toFixed(2)}
+                           </div>
                           <Button
                             size="sm"
                             onClick={(e) => {
