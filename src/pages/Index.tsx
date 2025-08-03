@@ -138,237 +138,177 @@ const Index = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        <div className="absolute inset-0 opacity-40"></div>
-        
-        <div className="relative max-w-7xl mx-auto px-6 py-20">
-          <div className="text-center space-y-8">
-            <div className="space-y-4">
-              <Badge className="bg-white/10 text-white border-white/20 backdrop-blur-sm">
-                <Sparkles className="h-3 w-3 mr-1" />
-                Marketplace Inteligente
-              </Badge>
-              <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight">
-                Encontre os melhores
-                <br />
-                <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-                  produtos locais
-                </span>
-              </h1>
-              <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-                Conecte-se diretamente com vendedores da sua região e descubra produtos únicos com qualidade garantida.
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-4 justify-center">
-              <div className="text-center">
-                <div className="text-3xl font-light text-white mb-2">{filteredProducts.length}</div>
-                <div className="text-sm text-slate-400 uppercase tracking-wide">Produtos em destaque</div>
-              </div>
-              <div>
-                <div className="text-3xl font-light text-white mb-2">{categories.length}</div>
-                <div className="text-sm text-slate-400 uppercase tracking-wide">Categorias</div>
-              </div>
-              <div>
-                <div className="text-3xl font-light text-white mb-2">5+</div>
-                <div className="text-sm text-slate-400 uppercase tracking-wide">Cidades</div>
-              </div>
-            </div>
-            
-            <div className="relative max-w-xl mx-auto">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+    <div className="min-h-screen bg-gray-100">
+      {/* Header */}
+      <div className="bg-slate-900 text-white py-2">
+        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <h1 className="text-xl font-bold">Catalogin</h1>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input
-                placeholder="Buscar produtos, categorias..."
+                placeholder="Buscar produtos, marcas e muito mais..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 pr-4 py-4 text-lg border-white/20 bg-white/10 backdrop-blur-sm text-white placeholder:text-slate-300 rounded-xl"
+                className="pl-10 pr-4 py-2 w-96 bg-white text-black"
               />
             </div>
-            
-            <div className="flex flex-wrap gap-3 justify-center">
-              <Button variant="secondary" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                💻 Technology
-              </Button>
-              <Button variant="secondary" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                📱 Mobile
-              </Button>
-              <Button variant="secondary" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                🎧 Audio
-              </Button>
-              <Button variant="secondary" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-                🏠 Imóveis
-              </Button>
-            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link to="/login" className="flex items-center gap-2 hover:text-gray-300">
+              <User className="h-4 w-4" />
+              Entre
+            </Link>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-1 space-y-6">
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-slate-100">
-              <h3 className="font-semibold text-slate-900 mb-4">Busca Avançada</h3>
-              <div className="space-y-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <Input
-                    placeholder="Buscar produtos..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
+      {/* Main Hero Banner */}
+      <div className="bg-gradient-to-r from-orange-400 to-orange-500 text-white">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="md:col-span-2">
+              <h2 className="text-3xl font-bold mb-4">
+                Até 40% off em milhares de produtos
+              </h2>
+              <Badge className="bg-white/20 text-white border-white/30">
+                <Sparkles className="h-3 w-3 mr-1" />
+                Frete GRÁTIS Prime
+              </Badge>
             </div>
-
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-slate-100">
-              <h3 className="font-semibold text-slate-900 mb-4">Categorias</h3>
-              <div className="space-y-2">
-                <button
-                  onClick={() => setSelectedCategory('all')}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                    selectedCategory === 'all' 
-                      ? 'bg-emerald-50 text-emerald-600 font-medium' 
-                      : 'hover:bg-slate-50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span>Todas as categorias</span>
-                    <span className="text-sm text-slate-400">{products.length}</span>
+            
+            <Card className="p-4">
+              <h3 className="font-semibold mb-2">Ofertas melhores avaliadas</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {filteredProducts.slice(0, 2).map((product) => (
+                  <div key={product.id} className="text-center">
+                    <img 
+                      src={product.images?.[0] || "/placeholder.svg"} 
+                      alt={product.name}
+                      className="w-full h-16 object-cover rounded mb-1"
+                    />
+                    <Badge variant="destructive" className="text-xs">40% OFF</Badge>
                   </div>
-                </button>
-                
-                {categories.map((category) => (
-                  <button
-                    key={category.name}
-                    onClick={() => setSelectedCategory(category.name)}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
-                      selectedCategory === category.name 
-                        ? 'bg-emerald-50 text-emerald-600 font-medium' 
-                        : 'hover:bg-slate-50'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-2">
-                        <span>{category.icon}</span>
-                        {category.name}
-                      </span>
-                      <span className="text-sm text-slate-400">{category.count}</span>
-                    </div>
-                  </button>
                 ))}
               </div>
-            </div>
+            </Card>
 
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-100">
-              <div className="text-center space-y-3">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
-                  <MessageCircle className="h-6 w-6 text-emerald-600" />
+            <Card className="p-4">
+              <h3 className="font-semibold mb-2">Ofertas do Dia</h3>
+              <div className="text-center">
+                <div className="w-full h-20 bg-orange-200 rounded mb-2 flex items-center justify-center">
+                  <span className="text-2xl">📦</span>
                 </div>
-                <h4 className="font-semibold text-slate-900">Contato Direto</h4>
-                <p className="text-sm text-slate-600">
-                  Entre em contato diretamente com os vendedores via WhatsApp
-                </p>
+                <p className="text-sm">Até 40% de desconto</p>
               </div>
-            </div>
+            </Card>
           </div>
+        </div>
+      </div>
 
-          <div className="lg:col-span-3 space-y-6">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Categorias em Destaque</h2>
-                <p className="text-slate-600">Explore nossos produtos por categoria</p>
+      {/* Category Navigation */}
+      <div className="max-w-7xl mx-auto px-4 py-4">
+        <h3 className="text-lg font-semibold mb-4">Navegue pelas categorias, de A a Z</h3>
+        <div className="grid grid-cols-7 gap-4">
+          {categories.map((category) => (
+            <button
+              key={category.name}
+              onClick={() => setSelectedCategory(category.name)}
+              className="group flex flex-col items-center p-4 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-2 group-hover:shadow-md transition-shadow">
+                <span className="text-2xl">{category.icon}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant={viewMode === 'grid' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setViewMode('grid')}
-                >
-                  <Grid className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant={viewMode === 'list' ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setViewMode('list')}
-                >
-                  <List className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
+              <span className="text-sm text-center font-medium">{category.name}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <button
-                onClick={() => setSelectedCategory('all')}
-                className={`group p-6 rounded-xl border-2 transition-all ${
-                  selectedCategory === 'all'
-                    ? 'border-emerald-200 bg-emerald-50'
-                    : 'border-slate-200 hover:border-emerald-200 bg-white hover:shadow-lg'
-                }`}
-              >
-                <div className="text-center">
-                  <div className="text-4xl mb-4">🏪</div>
-                  <div className="font-medium text-lg mb-2">Todos</div>
-                  <div className="text-sm opacity-60">{products.length} itens</div>
-                </div>
-              </button>
-              
-              {categories.map((category, index) => (
-                <button
-                  key={category.name}
-                  onClick={() => setSelectedCategory(category.name)}
-                  className={`group p-6 rounded-xl border-2 transition-all ${
-                    selectedCategory === category.name
-                      ? 'border-emerald-200 bg-emerald-50'
-                      : 'border-slate-200 hover:border-emerald-200 bg-white hover:shadow-lg'
-                  }`}
-                >
-                  <div className="text-center">
-                    <div className="text-4xl mb-4">{category.icon}</div>
-                    <div className="font-medium text-lg mb-2">{category.name}</div>
-                    <div className="text-sm opacity-60">{category.count} itens</div>
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-slate-900">
-                {selectedCategory === 'all' ? 'Todos os Produtos' : selectedCategory}
-              </h3>
-              <div className="text-sm text-slate-500">
-                {filteredProducts.length} produto{filteredProducts.length !== 1 ? 's' : ''} encontrado{filteredProducts.length !== 1 ? 's' : ''}
-              </div>
-            </div>
-
-            {filteredProducts.length > 0 ? (
-              <div className={viewMode === 'grid' 
-                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' 
-                : 'space-y-4'
-              }>
-                {filteredProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onContact={handleContactSeller}
+      {/* Best Sellers Section */}
+      <div className="bg-white py-8">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-6">Mais Vendidos em Eletrônicos</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+            {filteredProducts.slice(0, 8).map((product) => (
+              <div key={product.id} className="group cursor-pointer">
+                <div className="bg-gray-50 rounded-lg p-4 mb-2 group-hover:shadow-md transition-shadow">
+                  <img 
+                    src={product.images?.[0] || "/placeholder.svg"} 
+                    alt={product.name}
+                    className="w-full h-24 object-cover rounded"
                   />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-16">
-                <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Search className="h-8 w-8 text-slate-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">Nenhum produto encontrado</h3>
-                <p className="text-slate-600 mb-6">
-                  Tente ajustar sua busca ou selecionar uma categoria diferente
-                </p>
-                <Button onClick={() => { setSearchTerm(''); setSelectedCategory('all'); }}>
-                  Limpar filtros
-                </Button>
+                <h4 className="text-sm font-medium line-clamp-2 mb-1">{product.name}</h4>
+                <p className="text-lg font-bold text-orange-600">R$ {Number(product.price).toFixed(2)}</p>
               </div>
-            )}
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Colorful Categories Section */}
+      <div className="bg-white py-8">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-6">Mais amados por categoria</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+            {[
+              { name: "Todos em casa arrumada", icon: "🏠", color: "bg-green-400" },
+              { name: "Beleza", icon: "💄", color: "bg-pink-400" },
+              { name: "Casa", icon: "🏡", color: "bg-blue-400" },
+              { name: "Cozinha", icon: "🍳", color: "bg-purple-400" },
+              { name: "Moda", icon: "👕", color: "bg-indigo-400" },
+              { name: "Eletrodomésticos", icon: "🔌", color: "bg-gray-400" },
+              { name: "Esporte", icon: "⚽", color: "bg-orange-400" }
+            ].map((cat) => (
+              <button
+                key={cat.name}
+                onClick={() => setSelectedCategory(cat.name)}
+                className={`${cat.color} rounded-lg p-6 text-white text-center hover:opacity-90 transition-opacity`}
+              >
+                <div className="text-3xl mb-2">{cat.icon}</div>
+                <div className="text-sm font-medium">{cat.name}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom promotional sections */}
+      <div className="bg-white py-8">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <Card className="p-6">
+              <h3 className="font-bold mb-4">Navegue por Ambiente</h3>
+              <div className="space-y-2">
+                <img src="/placeholder.svg" alt="Room" className="w-full h-20 object-cover rounded" />
+                <p className="text-sm">Quarto, sala, cozinha e mais</p>
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="font-bold mb-4">Papelaria com Frete GRÁTIS Prime</h3>
+              <div className="space-y-2">
+                <img src="/placeholder.svg" alt="Stationery" className="w-full h-20 object-cover rounded" />
+                <p className="text-sm">Material escolar e escritório</p>
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="font-bold mb-4">Beleza com Frete GRÁTIS Prime</h3>
+              <div className="space-y-2">
+                <img src="/placeholder.svg" alt="Beauty" className="w-full h-20 object-cover rounded" />
+                <p className="text-sm">Cuidados pessoais</p>
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="font-bold mb-4">Confira Kits de Produto</h3>
+              <div className="space-y-2">
+                <img src="/placeholder.svg" alt="Kits" className="w-full h-20 object-cover rounded" />
+                <p className="text-sm">Combos especiais</p>
+              </div>
+            </Card>
           </div>
         </div>
       </div>
