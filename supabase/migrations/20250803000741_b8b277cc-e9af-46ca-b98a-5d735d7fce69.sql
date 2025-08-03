@@ -1,0 +1,1 @@
+UPDATE products SET is_public = true WHERE id = '4a95b29c-370b-4b20-b9e8-cbcc12155fb1';
