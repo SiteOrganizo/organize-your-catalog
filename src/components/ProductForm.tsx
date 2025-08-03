@@ -49,7 +49,7 @@ export const ProductForm = ({ product, onSave, onCancel }: ProductFormProps) => 
     category_id: product?.category_id || null,
     images: product?.images || [],
     custom_fields: product?.custom_fields || {},
-    is_public: product?.is_public || false
+    is_public: true
   });
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export const ProductForm = ({ product, onSave, onCancel }: ProductFormProps) => 
         category_id: product.category_id || null,
         images: product.images || [],
         custom_fields: product.custom_fields || {},
-        is_public: product.is_public || false
+        is_public: true
       });
     }
   }, [product]);
@@ -413,21 +413,6 @@ export const ProductForm = ({ product, onSave, onCancel }: ProductFormProps) => 
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="is_public">Produto Público</Label>
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="is_public"
-                checked={formData.is_public || false}
-                onChange={(e) => setFormData({ ...formData, is_public: e.target.checked })}
-                className="rounded border-gray-300"
-              />
-              <Label htmlFor="is_public" className="text-sm text-muted-foreground">
-                Permitir que este produto seja visto no catálogo público
-              </Label>
-            </div>
-          </div>
 
           <div className="flex gap-4 pt-4">
             <Button type="submit" disabled={isLoading} className="flex-1">
